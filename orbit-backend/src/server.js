@@ -50,12 +50,13 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = parseInt(process.env.PORT) || 3000;
+let server;
 
 // Start server after database connection
-(async () => {
+const startServer = async () => {
   try {
     await connectDB();
-    const server = app.listen(PORT, "0.0.0.0", () => {
+    server = app.listen(PORT, "0.0.0.0", () => {
       console.log(`✅ Server running on port ${PORT}`);
       console.log("🎉 All systems ready!");
     });
@@ -68,8 +69,15 @@ const PORT = parseInt(process.env.PORT) || 3000;
         process.exit(0);
       });
     });
+    
+    return server;
   } catch (error) {
     console.error("❌ Failed to start server:", error.message);
     process.exit(1);
   }
-})();
+};
+
+// Start the server
+startServer();
+
+export default app;
