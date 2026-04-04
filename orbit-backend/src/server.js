@@ -30,6 +30,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/payment", paymentRoutes);
 
+// Test route to verify server is working
+app.get("/api/test", (req, res) => {
+  res.status(200).json({ message: "Server is working!", timestamp: new Date() });
+});
+
 // Health check endpoint for Railway
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "healthy", message: "Server is running", timestamp: new Date() });
