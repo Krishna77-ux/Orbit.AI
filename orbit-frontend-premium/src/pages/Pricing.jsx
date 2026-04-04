@@ -72,6 +72,12 @@ export default function Pricing() {
     try {
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        setError("Please login first to subscribe to a plan");
+        navigate("/login");
+        return;
+      }
+
       const response = await fetch(`${apiBase}/api/payment/create-checkout-session`, {
         method: "POST",
         headers: {

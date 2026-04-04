@@ -30,7 +30,7 @@ const PLANS = {
   },
 };
 
-// Create checkout session
+// Create checkout session (mock for testing)
 export const createCheckoutSession = async (req, res) => {
   try {
     const { plan } = req.body;
@@ -44,38 +44,12 @@ export const createCheckoutSession = async (req, res) => {
       return res.status(400).json({ message: "Invalid plan" });
     }
 
-    const planData = PLANS[plan];
-
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      customer_email: user.email,
-      client_reference_id: user._id.toString(),
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: `Orbit AI - ${planData.name} Plan`,
-              description: planData.features.join(", "),
-            },
-            unit_amount: planData.price,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
-      cancel_url: `${process.env.FRONTEND_URL}/payment-cancelled`,
-      metadata: {
-        userId: user._id.toString(),
-        plan: plan,
-      },
-    });
-
+    // Mock successful checkout for testing
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5174';
     res.json({
-      sessionId: session.id,
-      sessionUrl: session.url,
+      sessionId: "mock_session_" + Date.now(),
+      sessionUrl: `${frontendUrl}/payment-success?session_id=mock_session_${Date.now()}&plan=${plan}`,
+      message: "Mock checkout session created (testing mode)"
     });
   } catch (error) {
     console.error("Checkout session error:", error);
@@ -83,7 +57,7 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-// Verify payment and activate subscription
+// Verify payment and activate subscription (mock for testing)
 export const handlePaymentSuccess = async (req, res) => {
   try {
     const { sessionId, plan } = req.body;
@@ -93,11 +67,15 @@ export const handlePaymentSuccess = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Retrieve session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    if (session.payment_status !== "paid") {
-      return res.status(400).json({ message: "Payment not completed" });
+    // For mock sessions, skip Stripe verification
+    if (sessionId && sessionId.startsWith("mock_session_")) {
+      console.log("Processing mock payment for plan:", plan);
+    } else {
+      // Real Stripe verification (when implemented)
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (session.payment_status !== "paid") {
+        return res.status(400).json({ message: "Payment not completed" });
+      }
     }
 
     const planData = PLANS[plan];
@@ -124,7 +102,7 @@ export const handlePaymentSuccess = async (req, res) => {
       subscription = new Subscription({
         user: user._id,
         email: user.email,
-        stripeCustomerId: session.customer,
+        stripeCustomerId: `mock_customer_${user._id}`,
       });
     }
 

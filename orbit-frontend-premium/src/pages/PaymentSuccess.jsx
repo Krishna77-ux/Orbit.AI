@@ -18,6 +18,13 @@ export default function PaymentSuccess() {
       try {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+          setMessage("Please login first to verify payment");
+          setLoading(false);
+          navigate("/login");
+          return;
+        }
+
         const response = await fetch(`${getApiBase()}/api/payment/verify-payment`, {
           method: "POST",
           headers: {
@@ -45,6 +52,9 @@ export default function PaymentSuccess() {
 
     if (sessionId && plan) {
       verifyPayment();
+    } else {
+      setMessage("Invalid payment session");
+      setLoading(false);
     }
   }, [sessionId, plan]);
 
