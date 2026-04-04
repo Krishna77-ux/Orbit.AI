@@ -1,6 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+
+// DEBUG: Log environment variables at startup
+console.log("🔍 SERVER STARTUP DEBUG");
+console.log("🔍 NODE_ENV:", process.env.NODE_ENV);
+console.log("🔍 PORT:", process.env.PORT);
+console.log("🔍 MONGO_URI exists:", !!process.env.MONGO_URI);
+console.log("🔍 MONGO_URI preview:", process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 30) + "..." : "NOT SET");
+
 import resumeRoutes from "./routes/resumeRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
