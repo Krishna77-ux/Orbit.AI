@@ -82,35 +82,28 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal server error", error: err.message });
 });
 
-const PORT = parseInt(process.env.PORT) || 3000;
-let server;
+const PORT = parseInt(process.env.PORT) || 5000;
 
-// Start server after database connection
-const startServer = async () => {
-  try {
-    await connectDB();
-    server = app.listen(PORT, "0.0.0.0", () => {
-      console.log(`✅ Server running on port ${PORT}`);
-      console.log("🎉 All systems ready!");
-    });
+// Start server IMMEDIATELY (don't wait for DB)
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log("🎉 All systems ready!");
+  console.log("🌐 Routes are now accessible!");
+});
 
-    // Handle graceful shutdown
-    process.on("SIGTERM", () => {
-      console.log("SIGTERM received, shutting down gracefully...");
-      server.close(() => {
-        console.log("Server closed");
-        process.exit(0);
-      });
-    });
-    
-    return server;
-  } catch (error) {
-    console.error("❌ Failed to start server:", error.message);
-    process.exit(1);
-  }
-};
+// Connect to database asynchronously (don't block server)
+connectDB().catch(error => {
+  console.error("❌ Database connection failed:", error.message);
+  // Server keeps running even if DB fails
+});
 
-// Start the server
-startServer();
+// Handle graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received, shutting down gracefully...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});
 
 export default app;
