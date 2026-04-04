@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+// 🔍 DEBUG: Verify server file is loading
+console.log("🚀 SERVER FILE LOADED - This should appear in Railway logs");
+
 dotenv.config();
 
 const app = express();
@@ -14,6 +17,16 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// 🔍 SIMPLE TEST ROUTE - bypass route imports
+app.get("/api/simple-test", (req, res) => {
+  console.log("🧪 SIMPLE TEST ROUTE HIT");
+  res.status(200).json({ 
+    message: "Simple test working!", 
+    timestamp: new Date(),
+    file: "server.js"
+  });
+});
 
 // Increase JSON payload limit for larger requests
 app.use(express.json({ limit: "50mb" }));
