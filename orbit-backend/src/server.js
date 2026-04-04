@@ -33,15 +33,20 @@ app.use(express.json());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
+app.use("/api/payment", paymentRoutes);
+
 // Health check endpoint for Railway
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "healthy", message: "Server is running", timestamp: new Date() });
 });
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/resume", resumeRoutes);
-app.use("/api/payment", paymentRoutes);
+// Root endpoint
+app.get("/", (req, res) => {
+  res.status(200).send("Orbit Backend Running 🚀");
+});
 
 // Add logging middleware for debugging
 app.use((req, res, next) => {
@@ -49,17 +54,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.status(200).send("Orbit Backend Running 🚀");
-});
-
-// 404 handler
+// 404 handler - must be AFTER all routes
 app.use((req, res) => {
   console.warn(`[404] ${req.method} ${req.path}`);
   res.status(404).json({ message: "Endpoint not found", path: req.path, method: req.method });
 });
 
-// Error handling middleware
+// Error handling middleware - must be LAST
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(500).json({ message: "Internal server error", error: err.message });
