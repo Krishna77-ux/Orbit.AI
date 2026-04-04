@@ -32,7 +32,14 @@ app.use("/api/payment", paymentRoutes);
 
 // Test route to verify server is working
 app.get("/api/test", (req, res) => {
-  res.status(200).json({ message: "Server is working!", timestamp: new Date() });
+  res.status(200).json({ 
+    message: "Server is working!", 
+    timestamp: new Date(),
+    routes: {
+      auth: "/api/auth/login",
+      health: "/api/health"
+    }
+  });
 });
 
 // Health check endpoint for Railway
