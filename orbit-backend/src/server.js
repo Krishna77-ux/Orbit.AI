@@ -10,7 +10,15 @@ import authRoutes from "./routes/authRoutes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+// CORS configuration for production - allow all origins for now
+const corsOptions = {
+  origin: '*', // Allow all origins temporarily
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Increase JSON payload limit for larger requests
