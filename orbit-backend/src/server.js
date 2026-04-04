@@ -11,12 +11,17 @@ import authRoutes from "./routes/authRoutes.js";
 dotenv.config();
 
 const app = express();
-// CORS configuration for production - allow all origins for now
+
+// CORS configuration - allow Vercel frontend
 const corsOptions = {
-  origin: '*', // Allow all origins temporarily
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://orbit-ai-coud.vercel.app"
+  ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 
 app.use(cors(corsOptions));
