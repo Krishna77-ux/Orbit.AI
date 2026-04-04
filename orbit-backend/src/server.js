@@ -11,7 +11,7 @@ console.log("🔍 PORT:", process.env.PORT);
 console.log("🔍 MONGO_URI exists:", !!process.env.MONGO_URI);
 
 const app = express();
-const PORT = parseInt(process.env.PORT) || 3000;
+const PORT = process.env.RAILWAY_PORT || process.env.PORT || 3000;
 
 // Basic middleware
 app.use(cors());
