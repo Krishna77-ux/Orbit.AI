@@ -2,34 +2,28 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import resumeRoutes from "./routes/resumeRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
-
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-
 dotenv.config();
 
 const app = express();
 
-// CORS configuration - allow Vercel frontend
-const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://orbit-ai-coud.vercel.app"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
+// ✅ IMPORTANT: CORS at VERY TOP before everything
+app.use(cors({
+  origin: "https://orbit-ai-coud.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
-app.use(cors(corsOptions));
 app.use(express.json());
 
 // Increase JSON payload limit for larger requests
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+// Import routes after CORS
+import resumeRoutes from "./routes/resumeRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 // Routes
 app.use("/api/auth", authRoutes);
