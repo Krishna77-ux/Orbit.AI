@@ -2,18 +2,21 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-// 🔍 DEBUG: Verify server file is loading
-console.log("🚀 SERVER FILE LOADED - This should appear in Railway logs");
-
 dotenv.config();
 
 const app = express();
 
 // ✅ IMPORTANT: CORS at VERY TOP before everything
 app.use(cors({
-  origin: "https://orbit-ai-coud.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://orbit-ai-coud.vercel.app",
+    "https://orbit-ai.onrender.com" // Render backend URL
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
@@ -82,13 +85,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal server error", error: err.message });
 });
 
-const PORT = parseInt(process.env.PORT) || 5000;
+const PORT = process.env.PORT || 10000; // Render uses port 10000
 
 // Start server IMMEDIATELY (don't wait for DB)
-const server = app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log("🎉 All systems ready!");
   console.log("🌐 Routes are now accessible!");
+  console.log(`🌐 Server URL: http://localhost:${PORT}`);
 });
 
 // Connect to database asynchronously (don't block server)
