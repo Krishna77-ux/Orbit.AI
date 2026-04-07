@@ -1,0 +1,117 @@
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { API_CONFIG } from "../utils/api";
+
+const DEFAULT_JOBS = [
+  { title: "Full Stack Developer", match: 86, ats: 75, desc: "Building scalable web architectures with React and Node.js.", color: "border-green-500/30 bg-green-500/5", matchColor: "text-green-400" },
+  { title: "Frontend Developer", match: 63, ats: 70, desc: "Crafting beautiful interfaces with modern web technologies.", color: "border-yellow-500/30 bg-yellow-500/5", matchColor: "text-yellow-400" },
+];
+
+export default function Jobs() {
+  const { user } = useContext(AuthContext);
+  const [jobs, setJobs] = useState([]);
+  const [resumeData, setResumeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => { fetchData(); }, []);
+
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(API_CONFIG.RESUME_MY_RESUMES, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          setResumeData(data[0]);
+          setJobs(data[0].jobMatches || DEFAULT_JOBS);
+        } else {
+          setJobs(DEFAULT_JOBS);
+        }
+      } else {
+        setJobs(DEFAULT_JOBS);
+      }
+    } catch {
+      setJobs(DEFAULT_JOBS);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stats = [
+    { label: "Total Matches", value: jobs.length || 3, color: "bg-blue-600/10 border-blue-500/20 text-blue-400" },
+    { label: "Average Match", value: (resumeData?.matchScore || 95) + "%", color: "bg-green-600/10 border-green-500/20 text-green-400" },
+    { label: "Your ATS", value: (resumeData?.atsScore || 95) + "%", color: "bg-purple-600/10 border-purple-500/20 text-purple-400" },
+    { label: "Skills Gap", value: resumeData?.skillGap?.length || 7, color: "bg-orange-600/10 border-orange-500/20 text-orange-400" },
+  ];
+
+  const suggestedSkills = resumeData?.skillGap || ["redux", "typescript", "webpack", "graphql", "machine learning", "deep learning", "spark"];
+
+  return (
+    <div className="animate-fade-in-up">
+      <header className="mb-12">
+        <h1 className="text-6xl font-headline font-extrabold text-white tracking-tighter mb-4 flex items-center gap-4">
+          Perfect Job Matches <span className="text-4xl">💼</span>
+        </h1>
+        <p className="text-[#8a96c0] text-xl font-medium opacity-80">
+          Discover {jobs.length || 3} opportunities tailored to your profile
+        </p>
+      </header>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {stats.map((s, i) => (
+          <div key={i} className={`p-8 rounded-[2rem] border ${s.color} backdrop-blur-xl`}>
+             <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-4">{s.label}</p>
+             <h3 className="text-5xl font-headline font-black tracking-tighter">{s.value}</h3>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+        <div className="flex items-center gap-4">
+           <span className="text-xs font-bold text-[#8a96c0] uppercase tracking-widest">Sort By:</span>
+           <select className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-primary">
+              <option>Best Match</option>
+              <option>Highest ATS</option>
+           </select>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+           <span className="text-xs font-bold text-[#8a96c0] uppercase tracking-widest">Skills to Develop:</span>
+           {suggestedSkills.map((s, i) => (
+             <span key={i} className="px-4 py-1.5 rounded-full bg-orange-500/5 border border-orange-500/20 text-xs font-bold text-orange-400/80">
+               {s}
+             </span>
+           ))}
+        </div>
+      </div>
+
+      {/* Simplified Job List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {jobs.map((j, i) => (
+          <div key={i} className={`p-10 rounded-[3rem] glass border ${j.color || "border-white/10"} relative overflow-hidden group hover:scale-[1.02] transition-all duration-500`}>
+             <div className="flex justify-between items-start mb-8">
+                <div className="flex gap-3">
+                   <div className="px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-[10px] font-black text-green-400 uppercase tracking-widest">
+                      {j.match || 86}% Match
+                   </div>
+                   <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-white uppercase tracking-widest">
+                      {j.ats || 75}+ ATS
+                   </div>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                   <span className="material-symbols-outlined text-yellow-400 text-xl">lightbulb</span>
+                </div>
+             </div>
+             <h3 className="text-3xl font-headline font-bold text-white mb-3">{j.title || j.role || "Role"}</h3>
+             <p className="text-[#8a96c0] font-medium mb-12">{j.desc || j.description || "Building excellence through specialized analysis and strategy."}</p>
+             <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all uppercase tracking-widest text-xs">
+                Learn More
+             </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

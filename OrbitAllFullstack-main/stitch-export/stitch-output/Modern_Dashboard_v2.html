@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Orbit Dashboard | Celestial Career Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#a5b4fc",
+                    "secondary-container": "#68fadd",
+                    "inverse-primary": "#b9c5f2",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#1e1b4b",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary-fixed-dim": "#44ddc1",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f8fafc",
+                    "secondary-fixed": "#68fadd",
+                    "on-tertiary-fixed": "#002019",
+                    "on-tertiary-container": "#00ab8e",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "background": "#020617",
+                    "on-primary-fixed": "#0b1a3d",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-surface": "#f8fafc",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#10b981",
+                    "surface-variant": "#1e293b",
+                    "on-secondary-container": "#007261",
+                    "tertiary": "#002018",
+                    "inverse-on-surface": "#0f172a",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#b9c5f2",
+                    "surface-container": "#0f172a",
+                    "on-tertiary-fixed-variant": "#005142",
+                    "tertiary-container": "#00372c",
+                    "on-secondary-fixed-variant": "#005145",
+                    "primary": "#6366f1",
+                    "surface": "#020617",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#f8fafc",
+                    "outline": "#475569",
+                    "tertiary-fixed": "#5ffbd6",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#39456b",
+                    "error": "#ef4444",
+                    "on-secondary-fixed": "#00201a",
+                    "on-background": "#f8fafc",
+                    "surface-tint": "#6366f1",
+                    "outline-variant": "#334155",
+                    "on-surface-variant": "#94a3b8",
+                    "tertiary-fixed-dim": "#38debb",
+                    "surface-bright": "#1e293b",
+                    "primary-fixed": "#e0e7ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.75rem",
+                    "xl": "1rem",
+                    "2xl": "1.5rem",
+                    "3xl": "2.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            },
+            "animation": {
+                "fade-in-up": "fadeInUp 0.6s ease-out forwards",
+                "glow": "glow 4s ease-in-out infinite alternate"
+            },
+            "keyframes": {
+                "fadeInUp": {
+                    "0%": { opacity: "0", transform: "translateY(20px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" }
+                },
+                "glow": {
+                    "0%": { "box-shadow": "0 0 5px rgba(99, 102, 241, 0.2)" },
+                    "100%": { "box-shadow": "0 0 20px rgba(99, 102, 241, 0.6)" }
+                }
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: #f8fafc; }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-dark {
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .animate-delay-100 { animation-delay: 100ms; }
+        .animate-delay-200 { animation-delay: 200ms; }
+        .animate-delay-300 { animation-delay: 300ms; }
+        .animate-delay-400 { animation-delay: 400ms; }
+        .animate-delay-500 { animation-delay: 500ms; }
+        
+        /* Command Center Glows */
+        .glow-orbit {
+            box-shadow: 0 0 30px -10px rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 glass-dark w-72 rounded-r-[3rem] z-50 animate-fade-in-up">
+<div class="px-8 mb-12 flex items-center gap-4 group">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-indigo-400 flex items-center justify-center shadow-lg glow-orbit transition-all group-hover:scale-110">
+<span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+<div>
+<h1 class="text-2xl font-bold text-white tracking-tight">Orbit</h1>
+<p class="text-[9px] font-extrabold text-secondary uppercase tracking-[0.3em]">Career Nexus</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="bg-primary/20 text-white rounded-2xl px-6 py-4 flex items-center gap-4 text-sm font-semibold border border-white/10 transition-all hover:bg-primary/30" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Command Hub</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Resume Forge</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">map</span>
+<span>Star Map</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>Neural Tutor</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">work</span>
+<span>Target Sectors</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="bg-gradient-to-br from-primary-container to-slate-900 p-6 rounded-3xl relative overflow-hidden group border border-white/5">
+<div class="relative z-10">
+<p class="text-white font-bold text-sm mb-1">Ascend to Pro</p>
+<p class="text-slate-400 text-[11px] mb-4">Neural Mock Interviews &amp; Global Analytics</p>
+<button class="w-full py-3 bg-white text-primary rounded-xl text-xs font-black transition-all hover:bg-indigo-50 active:scale-95">INITIATE UPGRADE</button>
+</div>
+<div class="absolute -right-6 -bottom-6 opacity-10 group-hover:scale-125 transition-transform duration-700">
+<span class="material-symbols-outlined text-8xl text-white">grade</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-72 min-h-screen p-10 max-w-[1600px]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-12 animate-fade-in-up animate-delay-100">
+<div>
+<h2 class="text-4xl font-headline font-bold text-white tracking-tighter">System Ready, <span class="text-primary">Alex</span></h2>
+<p class="text-slate-400 font-medium mt-1">Telemetry suggests an 84% probability of career breakthrough this quarter.</p>
+</div>
+<div class="flex items-center gap-6">
+<button class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all border border-white/5">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-4 pl-6 border-l border-white/10">
+<div class="text-right">
+<p class="text-sm font-bold text-white">Alex Chen</p>
+<p class="text-[9px] text-secondary font-black uppercase tracking-widest">Operator • BTech L3</p>
+</div>
+<div class="relative group">
+<img alt="Student Profile Avatar" class="w-14 h-14 rounded-2xl border-2 border-white/10 shadow-2xl object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Portrait of a young professional man with a friendly expression in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGMLWZXywPBsvqiP__Q9NjZYghtcggNDEawOy1NvYPJx28RPyhwJ8QFrg9bxFCydMZ4EACuzOH2hRQrBJqRZUymqQW__p6Rr_O_j8k-PZzZHEYmehpiKms97WWNK9nhAx26QBslMAT5mtpbo-8sgRBV7soAcYXLKX3Q3tqzLRikbPIjH8GEW7yA48ToAzeQZff9DFkMCemXkd4RDCyEC3ZDlzTi1g1FDJ7GlC01NjeXVTCQ2eFg445yjmsPheZGwcGSToxKiqWTas"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-secondary border-2 border-[#020617] rounded-full"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- ATS Score Card -->
+<div class="col-span-12 lg:col-span-4 glass p-10 rounded-[3rem] relative overflow-hidden flex flex-col justify-between animate-fade-in-up animate-delay-200">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-bold text-white">Signal Strength</h3>
+<span class="material-symbols-outlined text-primary">sensors</span>
+</div>
+<p class="text-xs text-slate-400 mb-8 font-medium">ATS Resume resonance frequency</p>
+</div>
+<div class="flex items-end justify-between mb-4">
+<span class="text-7xl font-bold font-headline text-white tracking-tighter">68<span class="text-3xl text-secondary ml-1">%</span></span>
+<span class="text-[10px] font-black text-secondary bg-secondary/10 px-4 py-1.5 rounded-full mb-3 border border-secondary/20">ELITE TIER</span>
+</div>
+<div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[68%] rounded-full shadow-[0_0_20px_rgba(99,102,241,0.5)] transition-all duration-1000"></div>
+</div>
+<p class="mt-6 text-sm text-slate-400 leading-relaxed font-light italic">
+                    "Critical keyword gap detected in <span class="font-bold text-white text-glow">Cloud Architecture</span>."
+                </p>
+</div>
+<!-- Profile Summary / Target Role -->
+<div class="col-span-12 lg:col-span-8 bg-gradient-to-br from-indigo-600 via-primary to-indigo-900 rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl animate-fade-in-up animate-delay-300">
+<div class="relative z-10 h-full flex flex-col">
+<div class="flex justify-between items-start mb-10">
+<div>
+<span class="text-[10px] font-black text-white/60 uppercase tracking-[0.4em] mb-3 block">TARGET DESTINATION</span>
+<h3 class="text-4xl font-bold font-headline leading-tight">Frontend Architect</h3>
+</div>
+<div class="bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-2.5 rounded-2xl text-xs font-bold tracking-widest">
+                            LAUNCH: AUG 2025
+                        </div>
+</div>
+<div class="flex flex-wrap gap-3 mb-10">
+<span class="px-5 py-2 bg-black/20 rounded-xl text-xs font-semibold border border-white/10 backdrop-blur-sm hover:bg-black/30 transition-colors">React.js 18</span>
+<span class="px-5 py-2 bg-black/20 rounded-xl text-xs font-semibold border border-white/10 backdrop-blur-sm hover:bg-black/30 transition-colors">Tailwind CSS</span>
+<span class="px-5 py-2 bg-black/20 rounded-xl text-xs font-semibold border border-white/10 backdrop-blur-sm hover:bg-black/30 transition-colors">TypeScript 5</span>
+<span class="px-5 py-2 bg-black/20 rounded-xl text-xs font-semibold border border-white/10 backdrop-blur-sm hover:bg-black/30 transition-colors">Next.js 14</span>
+<span class="px-5 py-2 bg-secondary text-primary-container rounded-xl text-xs font-bold shadow-lg">+4 PROTOCOLS</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-4">
+<img class="w-12 h-12 rounded-2xl border-4 border-primary object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbCeA3_ZzwIaCHnApc69qcLMOXs-wBeyJWHsgdCKoWeRPY3gfuOHi6QIOc30LzxoCaBPqSSUwyzLUz68dFA9RSNZ88ViKgo2MUVCv2ExFt2NPZDDTMRpKJNiXPEXW4aqQd8OeuQtl9DElbfUe6cm2Su1MejMaMEX_CFD8baCLrWATSdVHqr6nzq3nMEReWoQZilRnd5abKxCL2iPdQYhv0KDP76UwWWsZnQ5g_E04-JTxLLILmpcy4ab0QFuhuupYLW6Y3iNJMQd8"/>
+<img class="w-12 h-12 rounded-2xl border-4 border-primary object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqspHgU-7-T7JpPTCKitbBw1DaOMq-Ph6vnNgnzL78xnmPOxgD2Gt0cwbEuAJwCrLDMb-E8ybHM0PzZfSfWNoN5B_Yg-teoyOjWWcTs0DBNRzE2iFfqhBo2f-nyZUWRGWj4bKHZ4-8nCj--9o8y_8lgkas4wy4mHAtH0lnzc-vmC08B7MXlTkUuqE4ZrkUSkJ69gm0UMjZQX8OHj7K9Heu0QDfRUD0pYUdAtd6PV3SaoTzATA8E-QMqyxMoWZE0oq4Ah-S5z0lziE"/>
+<div class="w-12 h-12 rounded-2xl border-4 border-primary bg-indigo-900 flex items-center justify-center text-xs font-bold">+12</div>
+</div>
+<p class="text-xs text-indigo-100 font-medium">Industry veterans tracking your progress</p>
+</div>
+<button class="bg-white text-primary px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all">Connect</button>
+</div>
+</div>
+<!-- Abstract Design Elements -->
+<div class="absolute -right-20 -top-20 w-96 h-96 bg-secondary/20 rounded-full blur-[100px]"></div>
+<div class="absolute -left-10 -bottom-10 w-64 h-64 bg-white/5 rounded-full blur-[80px]"></div>
+</div>
+<!-- Career Roadmap Progress -->
+<div class="col-span-12 glass p-10 rounded-[3rem] animate-fade-in-up animate-delay-400">
+<div class="flex items-center justify-between mb-12">
+<div>
+<h3 class="text-2xl font-bold text-white">Course Correction</h3>
+<p class="text-sm text-slate-400 font-medium mt-1">Phase 2: Neural UX Interaction Architecture</p>
+</div>
+<div class="flex items-end flex-col">
+<span class="text-4xl font-headline font-bold text-secondary">42%</span>
+<span class="text-[10px] uppercase font-black tracking-widest text-slate-500">Synchronization</span>
+</div>
+</div>
+<div class="relative py-8">
+<!-- Progress Line Base -->
+<div class="absolute top-1/2 left-0 w-full h-[1px] bg-white/10 -translate-y-1/2"></div>
+<!-- Active Progress Line -->
+<div class="absolute top-1/2 left-0 w-[42%] h-[3px] bg-gradient-to-r from-primary to-secondary -translate-y-1/2 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] transition-all duration-1000"></div>
+<div class="relative flex justify-between">
+<!-- Steps -->
+<div class="flex flex-col items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary text-primary-container flex items-center justify-center z-10 shadow-xl shadow-secondary/20 border border-white/20">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-[9px] font-black text-white uppercase tracking-widest text-center w-28">Foundations</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center z-10 shadow-2xl shadow-primary/40 animate-pulse border border-white/20">
+<span class="material-symbols-outlined text-lg">auto_awesome</span>
+</div>
+<span class="text-[9px] font-black text-primary uppercase tracking-widest text-center w-28">Artifacts</span>
+</div>
+<div class="flex flex-col items-center gap-4 opacity-40">
+<div class="w-12 h-12 rounded-2xl glass text-slate-400 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-lg">description</span>
+</div>
+<span class="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center w-28">Optimization</span>
+</div>
+<div class="flex flex-col items-center gap-4 opacity-40">
+<div class="w-12 h-12 rounded-2xl glass text-slate-400 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-lg">handshake</span>
+</div>
+<span class="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center w-28">Engagement</span>
+</div>
+<div class="flex flex-col items-center gap-4 opacity-40">
+<div class="w-12 h-12 rounded-2xl glass text-slate-400 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-lg">rocket</span>
+</div>
+<span class="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center w-28">Deployment</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="col-span-12 lg:col-span-3 space-y-4 animate-fade-in-up animate-delay-500">
+<h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] px-4 mb-6">Operations</h3>
+<button class="w-full p-5 glass hover:bg-white/5 rounded-3xl flex items-center gap-5 transition-all group border border-white/5">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container/10 text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">upload_file</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-bold text-white">Analyze File</p>
+<p class="text-[10px] text-slate-500 font-semibold tracking-wider">RESCAN RESUME</p>
+</div>
+</button>
+<button class="w-full p-5 glass hover:bg-white/5 rounded-3xl flex items-center gap-5 transition-all group border border-white/5">
+<div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">terminal</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-bold text-white">Neural Query</p>
+<p class="text-[10px] text-slate-500 font-semibold tracking-wider">ASK AI TUTOR</p>
+</div>
+</button>
+<button class="w-full p-5 glass hover:bg-white/5 rounded-3xl flex items-center gap-5 transition-all group border border-white/5">
+<div class="w-14 h-14 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">navigation</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-bold text-white">Plot Route</p>
+<p class="text-[10px] text-slate-500 font-semibold tracking-wider">VIEW ROADMAP</p>
+</div>
+</button>
+</div>
+<!-- Skill Radar Visual -->
+<div class="col-span-12 lg:col-span-5 glass p-10 rounded-[3rem] animate-fade-in-up animate-delay-500">
+<div class="flex justify-between items-center mb-10">
+<h3 class="text-lg font-bold text-white">Capability Matrix</h3>
+<span class="text-[10px] font-black text-primary px-3 py-1 bg-primary/10 rounded-lg">ACTIVE SCAN</span>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+<span>Logic Engines</span>
+<span class="text-white">88%</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-indigo-500 to-primary w-[88%] rounded-full shadow-[0_0_10px_rgba(99,102,241,0.3)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+<span>Interface Design</span>
+<span class="text-white">92%</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-emerald-500 to-secondary w-[92%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+<span>System Architecture</span>
+<span class="text-white">45%</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-slate-600 w-[45%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+<span>Social Diplomacy</span>
+<span class="text-white">76%</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-indigo-400 to-indigo-600 w-[76%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity -->
+<div class="col-span-12 lg:col-span-4 glass p-10 rounded-[3rem] animate-fade-in-up animate-delay-500">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-lg font-bold text-white">Event Log</h3>
+<button class="text-[10px] font-black text-secondary hover:text-white uppercase tracking-widest transition-colors">History</button>
+</div>
+<div class="space-y-8">
+<div class="flex gap-5 group">
+<div class="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex-shrink-0 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Module Synced</p>
+<p class="text-[11px] text-slate-500 mt-0.5">Advanced React Hooks • 2h ago</p>
+</div>
+</div>
+<div class="flex gap-5 group">
+<div class="w-11 h-11 rounded-2xl bg-blue-500/10 text-blue-400 flex-shrink-0 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">analytics</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Tele-Analysis Complete</p>
+<p class="text-[11px] text-slate-500 mt-0.5">Engineer_v2_Beta.pdf • 5h ago</p>
+</div>
+</div>
+<div class="flex gap-5 group">
+<div class="w-11 h-11 rounded-2xl bg-purple-500/10 text-purple-400 flex-shrink-0 flex items-center justify-center border border-purple-500/20 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">lightbulb</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Neural Suggestion</p>
+<p class="text-[11px] text-slate-500 mt-0.5">Focus: Tailwind JIT Protocol • 1d ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="mt-20 w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 border-t border-white/5 py-16 animate-fade-in-up animate-delay-500">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold text-white">Orbit Engine</span>
+<span class="text-[10px] font-medium tracking-wider text-slate-600">© 2024 CELESTIAL CAREER ENGINE. SYSTEM VERSION 4.0.2</span>
+</div>
+<div class="flex gap-10">
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Operations</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Privacy</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Protocol</a>
+</div>
+</footer>
+</main>
+<!-- FAB -->
+<div class="fixed bottom-10 right-10 z-[100] animate-fade-in-up animate-delay-500">
+<button class="w-20 h-20 rounded-[2rem] bg-primary shadow-[0_20px_50px_rgba(99,102,241,0.5)] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all duration-300 relative group overflow-hidden border border-white/20">
+<span class="material-symbols-outlined text-4xl relative z-10" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div class="absolute inset-0 bg-gradient-to-tr from-indigo-400 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</div>
+</body></html>

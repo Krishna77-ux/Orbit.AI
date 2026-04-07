@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Orbit | AI Learning Roadmap</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#a5b4fc",
+                    "secondary-container": "#68fadd",
+                    "inverse-primary": "#b9c5f2",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#1e1b4b",
+                    "surface-container-high": "#1e293b",
+                    "secondary-fixed-dim": "#44ddc1",
+                    "surface-dim": "#0f172a",
+                    "surface-container-low": "#020617",
+                    "secondary-fixed": "#68fadd",
+                    "on-tertiary-fixed": "#002019",
+                    "on-tertiary-container": "#00ab8e",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "background": "#030712",
+                    "on-primary-fixed": "#0b1a3d",
+                    "surface-container-highest": "#334155",
+                    "on-surface": "#f8fafc",
+                    "surface-container-lowest": "#0f172a",
+                    "secondary": "#10b981",
+                    "surface-variant": "#1e293b",
+                    "on-secondary-container": "#007261",
+                    "tertiary": "#002018",
+                    "inverse-on-surface": "#0f172a",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#b9c5f2",
+                    "surface-container": "#0f172a",
+                    "on-tertiary-fixed-variant": "#005142",
+                    "tertiary-container": "#00372c",
+                    "on-secondary-fixed-variant": "#005145",
+                    "primary": "#6366f1",
+                    "surface": "#030712",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#f8fafc",
+                    "outline": "#475569",
+                    "tertiary-fixed": "#5ffbd6",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#39456b",
+                    "error": "#ef4444",
+                    "on-secondary-fixed": "#00201a",
+                    "on-background": "#f8fafc",
+                    "surface-tint": "#6366f1",
+                    "outline-variant": "#334155",
+                    "on-surface-variant": "#94a3b8",
+                    "tertiary-fixed-dim": "#38debb",
+                    "surface-bright": "#1e293b",
+                    "primary-fixed": "#e0e7ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.75rem",
+                    "xl": "1rem",
+                    "2xl": "1.5rem",
+                    "3xl": "2.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            },
+            "animation": {
+                'slide-in-right': 'slide-in-right 0.6s cubic-bezier(0.23, 1, 0.32, 1) both',
+                'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                'pulse-glow': 'pulse-glow 2s infinite ease-in-out',
+                'line-flow': 'line-flow 3s linear infinite',
+                'star-blink': 'star-blink 4s infinite ease-in-out'
+            },
+            "keyframes": {
+                'slide-in-right': {
+                    '0%': { transform: 'translateX(30px)', opacity: '0' },
+                    '100%': { transform: 'translateX(0)', opacity: '1' }
+                },
+                'fadeInUp': {
+                    '0%': { opacity: '0', transform: 'translateY(20px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' }
+                },
+                'pulse-glow': {
+                    '0%, 100%': { boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.4)' },
+                    '50%': { boxShadow: '0 0 20px 10px rgba(16, 185, 129, 0.1)' }
+                },
+                'line-flow': {
+                    '0%': { backgroundPosition: '0 0' },
+                    '100%': { backgroundPosition: '0 40px' }
+                },
+                'star-blink': {
+                    '0%, 100%': { opacity: '0.2' },
+                    '50%': { opacity: '0.6' }
+                }
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f8fafc; }
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-dark {
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Connecting Line Animation */
+        .animated-connector {
+            background: linear-gradient(to bottom, transparent, #10b981, #6366f1, transparent);
+            background-size: 100% 40px;
+            animation: line-flow 2s linear infinite;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .glow-orbit {
+            box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body class="text-on-surface min-h-screen selection:bg-primary/30 overflow-x-hidden">
+<!-- Cosmic Background Elements -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="absolute top-[-10%] left-[-5%] w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[150px]"></div>
+<div class="star animate-star-blink w-1 h-1 bg-white top-[10%] left-[15%]" style="animation-delay: 0s;"></div>
+<div class="star animate-star-blink w-1 h-1 bg-white top-[30%] left-[85%]" style="animation-delay: 1s;"></div>
+<div class="star animate-star-blink w-1.5 h-1.5 bg-secondary top-[70%] left-[10%]" style="animation-delay: 2s;"></div>
+<div class="star animate-star-blink w-1 h-1 bg-white top-[85%] left-[90%]" style="animation-delay: 0.5s;"></div>
+</div>
+<!-- Sidebar Navigation (Matching SCREEN_11) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 glass-dark w-72 rounded-r-[3rem] z-50 animate-fade-in-up">
+<div class="px-8 mb-12 flex items-center gap-4 group">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-indigo-400 flex items-center justify-center shadow-lg glow-orbit transition-all group-hover:scale-110">
+<span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+<div>
+<h1 class="text-2xl font-bold text-white tracking-tight">Orbit</h1>
+<p class="text-[9px] font-extrabold text-secondary uppercase tracking-[0.3em]">Career Nexus</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Command Hub</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Resume Forge</span>
+</a>
+<a class="bg-primary/20 text-white rounded-2xl px-6 py-4 flex items-center gap-4 text-sm font-semibold border border-white/10 transition-all hover:bg-primary/30" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span>Star Map</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>Neural Tutor</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">work</span>
+<span>Target Sectors</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="bg-gradient-to-br from-primary-container to-slate-900 p-6 rounded-3xl relative overflow-hidden group border border-white/5">
+<div class="relative z-10">
+<p class="text-white font-bold text-sm mb-1">Ascend to Pro</p>
+<p class="text-slate-400 text-[11px] mb-4">Neural Mock Interviews &amp; Global Analytics</p>
+<button class="w-full py-3 bg-white text-primary rounded-xl text-xs font-black transition-all hover:bg-indigo-50 active:scale-95">INITIATE UPGRADE</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-72 min-h-screen p-10 max-w-[1600px] relative z-10">
+<!-- Header -->
+<header class="flex justify-between items-center mb-16 animate-fade-in-up">
+<div>
+<h2 class="text-4xl font-headline font-bold text-white tracking-tighter">Roadmap <span class="text-primary">Protocols</span></h2>
+<p class="text-slate-400 font-medium mt-1">AI-synchronized trajectory for your career breakthrough.</p>
+</div>
+<div class="flex items-center gap-6">
+<button class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all border border-white/5">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-4 pl-6 border-l border-white/10">
+<div class="text-right">
+<p class="text-sm font-bold text-white">Alex Chen</p>
+<p class="text-[9px] text-secondary font-black uppercase tracking-widest">Operator • BTech L3</p>
+</div>
+<div class="relative">
+<img alt="Student Profile Avatar" class="w-14 h-14 rounded-2xl border-2 border-white/10 shadow-2xl object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGMLWZXywPBsvqiP__Q9NjZYghtcggNDEawOy1NvYPJx28RPyhwJ8QFrg9bxFCydMZ4EACuzOH2hRQrBJqRZUymqQW__p6Rr_O_j8k-PZzZHEYmehpiKms97WWNK9nhAx26QBslMAT5mtpbo-8sgRBV7soAcYXLKX3Q3tqzLRikbPIjH8GEW7yA48ToAzeQZff9DFkMCemXkd4RDCyEC3ZDlzTi1g1FDJ7GlC01NjeXVTCQ2eFg445yjmsPheZGwcGSToxKiqWTas"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-secondary border-2 border-[#030712] rounded-full"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Grid -->
+<div class="grid grid-cols-12 gap-10">
+<!-- Left Hero Section -->
+<div class="col-span-12 lg:col-span-8 animate-fade-in-up delay-100">
+<h1 class="text-6xl font-black tracking-tighter text-white mb-6 leading-[0.9] glow-text">Your Path to <br/><span class="text-secondary">Software Engineer</span></h1>
+<p class="text-xl text-slate-400 leading-relaxed max-w-2xl font-body font-medium">
+                The AI has analyzed 450+ industry requirements to curate your specialized learning trajectory. Focus on these milestones to close the skill gap.
+            </p>
+</div>
+<!-- Role Readiness Card -->
+<div class="col-span-12 lg:col-span-4 glass p-10 rounded-[3rem] relative overflow-hidden flex flex-col justify-between animate-fade-in-up delay-200">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-bold text-white">System Sync</h3>
+<span class="material-symbols-outlined text-primary">sensors</span>
+</div>
+<p class="text-xs text-slate-400 mb-8 font-medium">Target role compatibility index</p>
+</div>
+<div class="flex items-end justify-between mb-4">
+<span class="text-7xl font-bold font-headline text-white tracking-tighter">80<span class="text-3xl text-secondary ml-1">%</span></span>
+<span class="text-[10px] font-black text-secondary bg-secondary/10 px-4 py-1.5 rounded-full mb-3 border border-secondary/20">ADVANCED</span>
+</div>
+<div class="w-full h-2.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[80%] rounded-full shadow-[0_0_20px_rgba(99,102,241,0.5)] transition-all duration-1000"></div>
+</div>
+<p class="text-xs text-slate-500 mt-4 font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">info</span> 
+                Next milestone: Master Testing (Step 3)
+            </p>
+</div>
+<!-- Roadmap Timeline and Module Details -->
+<div class="col-span-12 xl:col-span-4 space-y-8 relative py-8 animate-fade-in-up delay-300">
+<!-- Vertical Line Connector -->
+<div class="absolute left-10 top-0 bottom-0 w-[2px] bg-white/5 rounded-full overflow-hidden">
+<div class="h-[45%] w-full animated-connector rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
+</div>
+<!-- Step 1: Completed -->
+<div class="relative flex items-center gap-8 group cursor-pointer transition-all">
+<div class="z-10 w-12 h-12 rounded-2xl bg-secondary text-primary-container flex items-center justify-center shadow-lg shadow-secondary/20 border border-white/20 transition-all group-hover:scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1 p-5 glass rounded-2xl border-l-4 border-secondary/40 group-hover:bg-white/5 transition-all">
+<span class="text-[9px] font-black text-secondary uppercase tracking-[0.2em] mb-1 block">Phase 1 Complete</span>
+<h4 class="font-bold text-white text-base">Step 1: React Basics</h4>
+</div>
+</div>
+<!-- Step 2: Current -->
+<div class="relative flex items-center gap-8 group cursor-pointer transition-all">
+<div class="z-10 w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-2xl shadow-primary/40 animate-pulse border border-white/20 transition-all group-hover:scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex-1 p-6 glass border-l-4 border-primary shadow-2xl shadow-primary/10 rounded-2xl group-hover:bg-white/10 transition-all">
+<span class="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-1 block">Active Protocol</span>
+<h4 class="font-bold text-white text-lg leading-tight">Step 2: Advanced State Management</h4>
+</div>
+</div>
+<!-- Step 3: Next -->
+<div class="relative flex items-center gap-8 group cursor-pointer opacity-50 hover:opacity-100 transition-all">
+<div class="z-10 w-12 h-12 rounded-2xl glass text-slate-500 flex items-center justify-center border border-white/5 transition-all group-hover:scale-110">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div class="flex-1 p-5 glass rounded-2xl transition-all">
+<span class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1 block">Queue</span>
+<h4 class="font-bold text-slate-300 text-base">Step 3: End-to-End Testing</h4>
+</div>
+</div>
+<!-- Step 4: Future -->
+<div class="relative flex items-center gap-8 group cursor-pointer opacity-30">
+<div class="z-10 w-12 h-12 rounded-2xl glass text-slate-600 flex items-center justify-center border border-white/5">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div class="flex-1 p-5 glass rounded-2xl">
+<span class="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1 block">Encrypted</span>
+<h4 class="font-bold text-slate-500 text-base">Step 4: CI/CD Pipelines</h4>
+</div>
+</div>
+</div>
+<!-- Detail Module View -->
+<div class="col-span-12 xl:col-span-8 animate-fade-in-up delay-400">
+<div class="glass p-12 rounded-[3.5rem] relative overflow-hidden group shadow-2xl border border-white/5">
+<div class="flex flex-col lg:flex-row justify-between items-start gap-10 mb-12">
+<div class="space-y-6">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-[10px] font-black uppercase tracking-widest">Active Module Scan</span>
+</div>
+<h2 class="text-5xl font-bold text-white tracking-tight leading-none">Advanced State Management</h2>
+<p class="text-slate-400 leading-relaxed max-w-xl text-lg font-medium">
+                            Master the complexities of modern application state. Move beyond simple props and hooks into Redux Toolkit, React Query, and atomic state libraries.
+                        </p>
+</div>
+<div class="glass bg-white/5 p-6 rounded-3xl min-w-[220px] flex flex-col items-center justify-center border border-white/10 hover:scale-105 transition-all">
+<span class="material-symbols-outlined text-secondary text-4xl mb-3">schedule</span>
+<span class="text-3xl font-black text-white">12 Hours</span>
+<span class="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Est. Synchrony</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Resource 1 -->
+<a class="group/link glass bg-white/5 p-8 rounded-3xl transition-all hover:bg-white/10 hover:-translate-y-2 border border-white/5" href="#">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center text-red-500 group-hover/link:rotate-6 transition-transform">
+<span class="material-symbols-outlined text-3xl">video_library</span>
+</div>
+<div class="flex-1">
+<h5 class="font-bold text-white text-lg">Mastering Redux Toolkit</h5>
+<p class="text-xs text-slate-500 font-semibold tracking-wider uppercase mt-1">Video Core • YouTube</p>
+</div>
+<span class="material-symbols-outlined text-slate-600 group-hover/link:text-white group-hover/link:translate-x-1 transition-all">chevron_right</span>
+</div>
+</a>
+<!-- Resource 2 -->
+<a class="group/link glass bg-white/5 p-8 rounded-3xl transition-all hover:bg-white/10 hover:-translate-y-2 border border-white/5" href="#">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 group-hover/link:rotate-6 transition-transform">
+<span class="material-symbols-outlined text-3xl">menu_book</span>
+</div>
+<div class="flex-1">
+<h5 class="font-bold text-white text-lg">Official Documentation</h5>
+<p class="text-xs text-slate-500 font-semibold tracking-wider uppercase mt-1">Deep Dive • docs.react.com</p>
+</div>
+<span class="material-symbols-outlined text-slate-600 group-hover/link:text-white group-hover/link:translate-x-1 transition-all">chevron_right</span>
+</div>
+</a>
+<!-- Sandbox Card -->
+<div class="md:col-span-2 group/sandbox bg-gradient-to-br from-primary via-indigo-600 to-indigo-900 p-10 rounded-[2.5rem] transition-all relative overflow-hidden hover:shadow-[0_20px_60px_rgba(99,102,241,0.4)]">
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="text-white space-y-2">
+<h4 class="text-2xl font-bold tracking-tight">Launch Interactive Sandbox</h4>
+<p class="text-white/70 text-sm font-medium">Practice state management in a live, AI-monitored environment.</p>
+</div>
+<button class="px-10 py-4 bg-white text-primary font-black rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 uppercase text-xs tracking-[0.2em]">
+                                Start Lab
+                            </button>
+</div>
+<!-- Decorative glow -->
+<div class="absolute -right-10 -top-10 w-64 h-64 bg-secondary/30 rounded-full blur-[80px] opacity-50"></div>
+</div>
+</div>
+<!-- Tutor Integration -->
+<div class="mt-10 glass bg-primary/10 p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8 border border-primary/20 hover:bg-primary/20 transition-all cursor-pointer group/tutor">
+<div class="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-primary shadow-2xl group-hover/tutor:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div class="flex-1 text-center md:text-left">
+<h4 class="text-xl font-bold text-white">Need help with State Management?</h4>
+<p class="text-sm text-slate-400 font-medium">Orbit AI is ready to explain concepts using analogies you'll love.</p>
+</div>
+<button class="px-8 py-3 bg-secondary text-primary-container rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-105 transition-all">
+                        Ask Career Tutor
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-20 w-full flex flex-col md:flex-row justify-between items-center gap-8 border-t border-white/5 py-12 animate-fade-in-up">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold text-white">Orbit Engine</span>
+<span class="text-[10px] font-medium tracking-wider text-slate-600 uppercase">© 2024 CELESTIAL CAREER ENGINE. PROTOCOL v4.0.2</span>
+</div>
+<div class="flex gap-10">
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Operations</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Privacy</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">System Status</a>
+</div>
+</footer>
+</main>
+<!-- AI Assistant FAB -->
+<div class="fixed bottom-10 right-10 z-[100] animate-fade-in-up">
+<button class="w-20 h-20 rounded-[2rem] bg-primary shadow-[0_20px_50px_rgba(99,102,241,0.5)] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all duration-300 relative group overflow-hidden border border-white/20">
+<span class="material-symbols-outlined text-4xl relative z-10" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div class="absolute inset-0 bg-gradient-to-tr from-indigo-400 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</div>
+</body></html>
