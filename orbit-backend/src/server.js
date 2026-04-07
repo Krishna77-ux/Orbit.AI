@@ -1,0 +1,113 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const app = express();
+
+// ✅ IMPORTANT: CORS at VERY TOP before everything
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://orbit-ai-coud.vercel.app",
+    "https://orbit-ai.onrender.com" // Render backend URL
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.use(express.json());
+
+// 🔍 SIMPLE TEST ROUTE - bypass route imports
+app.get("/api/simple-test", (req, res) => {
+  console.log("🧪 SIMPLE TEST ROUTE HIT");
+  res.status(200).json({ 
+    message: "Simple test working!", 
+    timestamp: new Date(),
+    file: "server.js"
+  });
+});
+
+// Increase JSON payload limit for larger requests
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+// Import routes after CORS
+import resumeRoutes from "./routes/resumeRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
+app.use("/api/payment", paymentRoutes);
+
+// Test route to verify server is working
+app.get("/api/test", (req, res) => {
+  res.status(200).json({ 
+    message: "Server is working!", 
+    timestamp: new Date(),
+    routes: {
+      auth: "/api/auth/login",
+      health: "/api/health"
+    }
+  });
+});
+
+// Health check endpoint for Railway
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "healthy", message: "Server is running", timestamp: new Date() });
+});
+
+app.get("/", (req, res) => {
+  res.status(200).send("Orbit Backend Running 🚀");
+});
+
+// Add logging middleware for debugging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+// 404 handler
+app.use((req, res) => {
+  console.warn(`[404] ${req.method} ${req.path}`);
+  res.status(404).json({ message: "Endpoint not found", path: req.path, method: req.method });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Error:", err);
+  res.status(500).json({ message: "Internal server error", error: err.message });
+});
+
+const PORT = process.env.PORT || 10000; // Render uses port 10000
+
+// Start server IMMEDIATELY (don't wait for DB)
+const server = app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log("🎉 All systems ready!");
+  console.log("🌐 Routes are now accessible!");
+  console.log(`🌐 Server URL: http://localhost:${PORT}`);
+});
+
+// Connect to database asynchronously (don't block server)
+connectDB().catch(error => {
+  console.error("❌ Database connection failed:", error.message);
+  // Server keeps running even if DB fails
+});
+
+// Handle graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received, shutting down gracefully...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});
+
+export default app;
