@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadMessage, setUploadMessage] = useState("");
   const [subscription, setSubscription] = useState(null);
+  const [showAnalysisCTA, setShowAnalysisCTA] = useState(false);
 
   useEffect(() => {
     fetchResumeData();
@@ -76,8 +77,9 @@ export default function Dashboard() {
       if (res.ok) {
         setUploadProgress(100);
         setResumeData(data);
-        setUploadMessage(`✅ ATS: ${data.atsScore}% | Skills: ${data.skills?.length || 0}`);
-        setTimeout(() => { setUploadMessage(""); setUploadProgress(0); }, 3000);
+        setUploadMessage(`✅ ATS: ${data.atsScore}% | ${data.skills?.length || 0} skills detected!`);
+        setShowAnalysisCTA(true);
+        setTimeout(() => { setUploadMessage(""); setUploadProgress(0); }, 5000);
         e.target.value = "";
       } else {
         setUploadMessage(`❌ ${data.message || "Upload failed"}`);
@@ -216,14 +218,24 @@ export default function Dashboard() {
                   {resumeData ? "Your career data is live." : "PDF only · Max 10MB · Instant AI analysis"}
                 </p>
               )}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="bg-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-50"
-                style={{ color: '#3730a3' }}
-              >
-                {uploading ? `${uploadProgress}%...` : resumeData ? "Re-Analyze" : "Upload PDF"}
-              </button>
+              <div className="flex gap-3 items-center">
+                {showAnalysisCTA && (
+                  <button
+                    onClick={() => navigate("/resume-analyzer")}
+                    className="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border border-white/30 text-white hover:bg-white/20 transition-all hover:scale-105 whitespace-nowrap"
+                  >
+                    View Analysis →
+                  </button>
+                )}
+                <button
+                  onClick={() => { setShowAnalysisCTA(false); fileInputRef.current?.click(); }}
+                  disabled={uploading}
+                  className="bg-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-50 whitespace-nowrap"
+                  style={{ color: '#3730a3' }}
+                >
+                  {uploading ? `${uploadProgress}%...` : resumeData ? "Re-Analyze" : "Upload PDF"}
+                </button>
+              </div>
             </div>
             {uploading && (
               <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden mt-4">
