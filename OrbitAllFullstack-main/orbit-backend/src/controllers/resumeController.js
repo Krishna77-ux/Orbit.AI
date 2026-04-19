@@ -97,7 +97,7 @@ ${text.substring(0, 10000)}
       `;
 
       const model = ai.getGenerativeModel({ 
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         generationConfig: {
           temperature: 0.1,
         }
@@ -115,8 +115,8 @@ ${text.substring(0, 10000)}
           lastError = retryErr;
           console.warn(`⚠️ Attempt ${attempt} failed: ${retryErr.message?.substring(0, 120)}`);
           if (attempt < 3) {
-            const delay = attempt * 2000;
-            console.log(`⏳ Waiting ${delay/1000}s before retry...`);
+            const delay = attempt * 500;
+            console.log(`⏳ Waiting ${delay}ms before retry...`);
             await new Promise(r => setTimeout(r, delay));
           }
         }
@@ -182,10 +182,10 @@ ${text.substring(0, 10000)}
         trackMatches: trackMatches
       });
     } catch (aiError) {
-      console.error("⛔ AI FINAL ERROR:", aiError.message);
+      console.error("⛔ AI FINAL ERROR:", aiError.message, aiError.status, aiError.errorDetails);
       
-      // Fallback to simulated analysis for ANY AI failure (503, quota, network, etc.)
-      console.log("🛠️ AI unavailable — Triggering Simulated Analysis Fallback...");
+      // Fallback to simulated analysis for ANY AI failure
+      console.log("🛠️ AI unavailable — Triggering Simulated Analysis Fallback. Reason:", aiError.message);
       const simulatedData = {
         atsScore: 78,
         skills: ["Project Management", "React", "Data Analysis", "Communication", "Leadership"],
@@ -334,7 +334,7 @@ export const setTargetRole = async (req, res) => {
       `;
 
       const model = ai.getGenerativeModel({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-1.5-flash',
         generationConfig: { temperature: 0.3 }
       });
 
@@ -680,7 +680,7 @@ export const getJobMatches = async (req, res) => {
       `;
 
       const model = ai.getGenerativeModel({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-1.5-flash',
         generationConfig: { temperature: 0.2 }
       });
 
@@ -779,7 +779,7 @@ export const getCareerTree = async (req, res) => {
     `;
 
     const model = ai.getGenerativeModel({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-1.5-flash',
       generationConfig: { temperature: 0.3 }
     });
 
@@ -898,7 +898,7 @@ Context about the User:
 Please provide a helpful, tailored, and very concise coaching answer directly to the user based on their specific profile and question. Be conversational, encouraging, and format your output beautifully with emojis and markdown (e.g. boldings, lists) where appropriate. Limit your response to 2-3 short paragraphs max.
       `;
 
-      const tutorModel = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const tutorModel = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
       const tutorResult = await tutorModel.generateContent(prompt);
 
       answer = tutorResult.response.text();
