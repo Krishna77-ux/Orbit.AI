@@ -6,8 +6,10 @@ import { canUploadResume, decrementUploadCount } from "./paymentController.js";
 async function callAI(prompt) {
   const groqKey = process.env.GROQ_API_KEY;
   const geminiKey = process.env.GEMINI_API_KEY;
+  const openaiKey = process.env.OPENAI_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
-  // Try Groq first (free, reliable)
+  // ─── 1. Attempt Groq (Ultra-fast, Free tier) ─────────────────────────────
   if (groqKey) {
     const groqModels = ["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768"];
     
@@ -46,7 +48,7 @@ async function callAI(prompt) {
     }
   }
 
-  // Fallback: Gemini v1beta
+  // ─── 2. Attempt Gemini (High context, Reliable) ─────────────────────────
   if (geminiKey) {
     try {
       console.log("🤖 Attempting Gemini AI (gemini-1.5-flash)...");
@@ -65,22 +67,88 @@ async function callAI(prompt) {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("❌ Gemini API Error:", response.status, JSON.stringify(errorData));
-        throw new Error(`Gemini error ${response.status}: ${errorData.error?.message || "Unknown error"}`);
-      }
-
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      if (text) {
-        console.log("✅ Gemini AI responded successfully");
-        return text;
+        // Don't throw yet, try next provider
+      } else {
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        if (text) {
+          console.log("✅ Gemini AI responded successfully");
+          return text;
+        }
       }
     } catch (err) {
-      console.error("❌ Gemini fallback failed:", err.message);
-      throw err;
+      console.warn("⚠️ Gemini failed:", err.message);
     }
   }
 
-  throw new Error("All AI providers failed. Check API keys and quotas.");
+  // ─── 3. Attempt OpenAI (Gold standard for reliability) ──────────────────
+  if (openaiKey) {
+    try {
+      console.log("🤖 Attempting OpenAI (gpt-4o-mini)...");
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${openaiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.1
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("❌ OpenAI API Error:", response.status, JSON.stringify(errorData));
+      } else {
+        const data = await response.json();
+        const text = data.choices?.[0]?.message?.content || "";
+        if (text) {
+          console.log("✅ OpenAI responded successfully");
+          return text;
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ OpenAI failed:", err.message);
+    }
+  }
+
+  // ─── 4. Attempt Anthropic Claude ───────────────────────────────────────
+  if (anthropicKey) {
+    try {
+      console.log("🤖 Attempting Anthropic (claude-3-5-haiku-20241022)...");
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": anthropicKey,
+          "anthropic-version": "2023-06-01"
+        },
+        body: JSON.stringify({
+          model: "claude-3-5-haiku-20241022",
+          max_tokens: 4096,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("❌ Anthropic API Error:", response.status, JSON.stringify(errorData));
+      } else {
+        const data = await response.json();
+        const text = data.content?.[0]?.text || "";
+        if (text) {
+          console.log("✅ Anthropic responded successfully");
+          return text;
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ Anthropic failed:", err.message);
+    }
+  }
+
+  throw new Error("All AI providers (Groq, Gemini, OpenAI, Anthropic) failed. Please check API keys or resume content.");
 }
 
 // Keep callGemini as alias for backward compat
