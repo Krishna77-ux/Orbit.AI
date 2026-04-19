@@ -39,8 +39,19 @@ export const uploadResume = async (req, res) => {
     }
 
     console.log("📄 Processing PDF...");
-    const data = await pdf(req.file.buffer);
-    const text = data.text;
+    let text = "";
+    try {
+      const data = await pdf(req.file.buffer);
+      text = data.text;
+    } catch (pdfError) {
+      console.warn("⚠️ pdf-parse failed (bad XRef), falling back to raw text extraction:", pdfError.message);
+      // Fallback: extract readable ASCII text directly from the PDF buffer
+      text = req.file.buffer
+        .toString("utf-8")
+        .replace(/[^\x20-\x7E\n\r\t]/g, " ")
+        .replace(/\s{3,}/g, " ")
+        .trim();
+    }
 
     if (!text || text.trim().length === 0) {
       console.error("❌ PDF text extraction failed or file is empty");

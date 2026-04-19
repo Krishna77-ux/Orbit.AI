@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "cd OrbitAllFullstack-main/orbit-frontend-premium && npm install && npm run build"
+    "build": "cd OrbitAllFullstack-main/orbit-frontend-premium && npm install && npm run build && cp -r dist ../../dist"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
