@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { API_CONFIG } from "../utils/api";
+import { generatePDF } from "../utils/exportPDF";
 
 function getResources(stepTitle) {
   const q = encodeURIComponent(stepTitle + " tutorial for beginners");
@@ -314,6 +315,13 @@ export default function Roadmap() {
               >
                 <span className="material-symbols-outlined">hub</span>
                 View Career Tree
+              </button>
+              <button
+                onClick={() => generatePDF(resumeData ? { ...resumeData, targetRole: resumeData.targetRole } : {}, user?.name || "User")}
+                className="px-10 py-4 bg-gradient-to-r from-[#7c3aed] to-[#5ffbd6] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-lg flex items-center gap-3 whitespace-nowrap"
+              >
+                <span className="material-symbols-outlined">picture_as_pdf</span>
+                Download Report
               </button>
               <button
                 onClick={() => navigate("/job-match")}
