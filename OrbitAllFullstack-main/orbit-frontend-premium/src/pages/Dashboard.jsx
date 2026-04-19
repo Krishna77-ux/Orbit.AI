@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { API_CONFIG, getApiBase } from "../utils/api";
+import SkillsGapChart from "../components/SkillsGapChart";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -315,29 +316,25 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Capability Matrix */}
+        {/* Skills Gap Chart */}
         <div className="col-span-12 lg:col-span-5 glass p-10 rounded-[3rem] animate-fade-in-up animate-delay-400">
-          <div className="flex justify-between items-center mb-10">
-            <h3 className="text-lg font-bold text-white font-headline">Capability Matrix</h3>
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="text-lg font-bold text-white font-headline">Skills Gap Analyzer</h3>
+              <p className="text-xs text-slate-500 mt-1">Your level vs what roles require</p>
+            </div>
+            <button
+              onClick={() => navigate("/interview-prep")}
+              className="text-xs font-semibold text-[#5ffbd6] hover:text-white transition-colors flex items-center gap-1"
+            >
+              Prep <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
           </div>
-          <div className="space-y-7">
-            {(resumeData?.skills?.slice(0, 4) || ["Technical Skill 1", "Technical Skill 2", "Soft Skill 1", "Leadership"]).map((skill, i) => {
-              const basePct = resumeData ? (atsScore * 0.8) + (i * 3) : 60 + (i * 10);
-              const pct = Math.min(98, basePct + (Math.random() * 10));
-              const colors = ["from-primary to-indigo-400", "from-secondary to-emerald-400", "from-amber-400 to-orange-500", "from-purple-400 to-pink-500"];
-              return (
-                <div key={skill} className="space-y-3">
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                    <span className="text-white">{skill}</span>
-                    <span className="text-white/40">{Math.round(pct)}% Mastery</span>
-                  </div>
-                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-[2px]">
-                    <div className={`h-full bg-gradient-to-r ${colors[i % colors.length]} rounded-full shadow-[0_0_10px_rgba(255,255,255,0.1)] transition-all duration-1000 delay-300`} style={{ width: `${pct}%` }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <SkillsGapChart
+            skills={resumeData?.skills}
+            atsScore={resumeData?.atsScore || 0}
+            targetRole={resumeData?.targetRole || "Software Engineer"}
+          />
         </div>
 
         {/* Event Log */}

@@ -57,6 +57,55 @@ async function callAI(prompt) {
 // Keep callGemini as alias for backward compat
 const callGemini = callAI;
 
+// ─── Interview Prep ───────────────────────────────────────────────────────────
+export const getInterviewPrep = async (req, res) => {
+  try {
+    const resume = await Resume.findOne({ userId: req.user._id }).sort({ createdAt: -1 });
+    if (!resume) {
+      return res.status(404).json({ message: "No resume found. Please upload your resume first." });
+    }
+
+    const { skills = [], targetRole = "Software Engineer", atsScore = 0 } = resume;
+
+    const prompt = `You are an expert interview coach. Generate 10 diverse interview questions for a candidate applying for the role of "${targetRole}".
+
+Candidate Profile:
+- Skills: ${skills.slice(0, 10).join(", ") || "General skills"}
+- ATS Score: ${atsScore}%
+
+Generate EXACTLY 10 questions covering these categories:
+- 3 Behavioral questions (star method)
+- 3 Technical questions (based on their skills)
+- 2 Situational questions (workplace scenarios)
+- 2 Role-Specific questions (specific to ${targetRole})
+
+Return ONLY a valid JSON array with this EXACT structure, no markdown, no explanation:
+[
+  {
+    "question": "Tell me about a time you...",
+    "category": "Behavioral",
+    "difficulty": "Medium",
+    "answer": "A strong answer using the STAR method would include: Situation - describe the context. Task - explain your responsibility. Action - detail the steps you took. Result - share the measurable outcome. For example: [provide a 3-4 sentence model answer relevant to ${targetRole}]",
+    "tips": "Key points to mention: specific metrics, teamwork, leadership"
+  }
+]`;
+
+    const raw = await callAI(prompt);
+
+    // Extract JSON from response
+    const jsonMatch = raw.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error("AI did not return valid JSON array");
+
+    const questions = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(questions) || questions.length === 0) throw new Error("Empty questions array");
+
+    res.json({ questions, targetRole, totalCount: questions.length });
+  } catch (err) {
+    console.error("❌ Interview prep generation failed:", err.message);
+    res.status(500).json({ message: "Failed to generate interview questions. Please try again.", error: err.message });
+  }
+};
+
 
 export const uploadResume = async (req, res) => {
   try {

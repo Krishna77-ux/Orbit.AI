@@ -16,6 +16,7 @@ import Pricing from "./pages/Pricing";
 import Subscription from "./pages/Subscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancelled from "./pages/PaymentCancelled";
+import InterviewPrep from "./pages/InterviewPrep";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/chat-tutor" element={<ChatTutor />} />
+          <Route path="/interview-prep" element={<InterviewPrep />} />
         </Route>
 
         {/* Default Redirect */}

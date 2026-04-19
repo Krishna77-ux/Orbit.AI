@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { uploadResume, getMyResumes, generateRoadmap, getJobMatches, tutorChat, setTargetRole, getCareerTree } from "../controllers/resumeController.js";
+import { uploadResume, getMyResumes, generateRoadmap, getJobMatches, tutorChat, setTargetRole, getCareerTree, getInterviewPrep } from "../controllers/resumeController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -44,5 +44,6 @@ router.get("/test", (req, res) => {
 });
 router.post("/tutor", protect, tutorChat);
 router.post("/set-target-role", protect, setTargetRole);
+router.get("/interview-prep", protect, getInterviewPrep);
 
 export default router;

@@ -1,12 +1,14 @@
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import OnboardingFlow from "./OnboardingFlow";
 
 const menu = [
   { name: "Dashboard",       path: "/dashboard",       icon: "dashboard" },
   { name: "Resume Analyzer", path: "/resume-analyzer", icon: "description" },
   { name: "Career Orbit",    path: "/career-orbit",    icon: "auto_awesome" },
   { name: "Roadmap",         path: "/roadmap",         icon: "map" },
+  { name: "Interview Prep",  path: "/interview-prep",  icon: "quiz" },
   { name: "Job Match",       path: "/jobs",            icon: "work" },
   { name: "Career Tutor",    path: "/chat-tutor",      icon: "psychology" },
 ];
@@ -118,6 +120,8 @@ export default function Layout() {
           <span className="material-symbols-outlined text-3xl font-bold">psychology</span>
         </button>
       </div>
+      {/* Onboarding — shows once for new users */}
+      <OnboardingFlow />
     </div>
   );
 }

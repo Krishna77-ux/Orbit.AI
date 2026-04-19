@@ -14,6 +14,7 @@ export const API_CONFIG = {
   RESUME_JOBS: `${API_BASE_URL}/resume/jobs`,
   RESUME_SET_TARGET_ROLE: `${API_BASE_URL}/resume/set-target-role`,
   RESUME_CAREER_TREE: `${API_BASE_URL}/resume/career-tree`,
+  RESUME_INTERVIEW_PREP: `${API_BASE_URL}/resume/interview-prep`,
   CHAT_MESSAGE: `${API_BASE_URL}/resume/chat`,
   PAYMENT_SUBSCRIPTION: `${API_BASE_URL}/payment/subscription`,
   PAYMENT_CREATE_CHECKOUT: `${API_BASE_URL}/payment/create-checkout-session`,
