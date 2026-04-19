@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/Orbit%20AI-v2.0--final-5ffbd6?style=for-the-badge&logo=rocket&logoColor=white" alt="Orbit AI v2.0" />
 <img src="https://img.shields.io/badge/Author-Krishna%20Kumar-7c3aed?style=for-the-badge&logo=github&logoColor=white" alt="Author" />
-<img src="https://img.shields.io/badge/Powered%20by-Groq%20LLaMA%203.3%2070B-orange?style=for-the-badge&logo=meta&logoColor=white" alt="Groq AI" />
+<img src="https://img.shields.io/badge/Powered%20by-Groq%20%26%20SambaNova-orange?style=for-the-badge&logo=meta&logoColor=white" alt="AI Stack" />
 <img src="https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 
 # 🚀 Orbit AI — Celestial Career Intelligence Platform
@@ -53,7 +53,7 @@ Orbit AI analyzes your resume, identifies skill gaps, builds personalized learni
 |---|---|
 | **Node.js + Express** | REST API server |
 | **MongoDB + Mongoose** | Database |
-| **Groq API (LLaMA 3.3 70B)** | AI analysis engine — 14,400 free requests/day |
+| **Groq & SambaNova** | AI analysis engine — High-speed, Multi-Model, Zero-shot |
 | **pdf-parse** | PDF text extraction |
 | **JWT** | Authentication tokens |
 | **Multer** | File upload handling |
@@ -111,6 +111,11 @@ Orbit AI analyzes your resume, identifies skill gaps, builds personalized learni
 - Report includes: ATS Score, Skills, Strengths, Improvements, Skills Gap, Next Steps
 - Works from both Resume Analyzer page and Roadmap page
 - Uses browser print API — save as PDF in any format
+
+### 🛡️ Bulletproof AI Stack (Key Rotation)
+- Implements **Multi-Key Rotation** for both Groq and SambaNova
+- Automatically cycles through primary and backup keys if rate limits are hit
+- Multi-provider fallback: Groq → SambaNova → OpenAI → Anthropic → Simulated UI
 
 ---
 
@@ -222,12 +227,10 @@ This project is configured for **full-stack Vercel deployment** — both fronten
 |---|---|
 | `MONGO_URI` | MongoDB Atlas connection string |
 | `JWT_SECRET` | Random secret for JWT tokens |
-| `GROQ_API_KEY` | Groq API key (free at console.groq.com) |
-| `GEMINI_API_KEY` | Google Gemini key (optional fallback) |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `RAZORPAY_KEY_ID` | Razorpay key ID |
-| `RAZORPAY_KEY_SECRET` | Razorpay key secret |
+| `GROQ_API_KEY` | Primary Groq API key |
+| `GROQ_API_KEY_2` | Backup Groq API key (Optional) |
+| `SAMBANOVA_API_KEY` | Primary SambaNova API key |
+| `SAMBANOVA_API_KEY_2` | Backup SambaNova API key (Optional) |
 | `NODE_ENV` | `production` |
 
 ### Verify deployment:
