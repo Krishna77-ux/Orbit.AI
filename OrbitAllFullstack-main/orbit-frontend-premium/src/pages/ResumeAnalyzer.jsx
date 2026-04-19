@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { API_CONFIG } from "../utils/api";
 import PathSelection from "../components/PathSelection";
+import { generatePDF } from "../utils/exportPDF";
 
 export default function ResumeAnalyzer() {
   const { user } = useContext(AuthContext);
