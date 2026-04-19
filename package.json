@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "cd OrbitAllFullstack-main/orbit-frontend-premium && npm install && npm run build && cp -r dist/* ../../"
+    "build": "echo '🚀 Starting Mono-Build...' && cd OrbitAllFullstack-main/orbit-frontend-premium && npm install --force && npm run build && echo '✅ Frontend Build Success' && cp -rv dist/. ../../ && echo '📦 Files copied to root'"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
