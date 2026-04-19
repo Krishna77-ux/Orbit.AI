@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "cd OrbitAllFullstack-main/orbit-frontend-premium && ../../node_modules/.bin/vite build --outDir ../../"
+    "build": "cd OrbitAllFullstack-main/orbit-frontend-premium && ../../node_modules/.bin/vite build --outDir ../../dist"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
