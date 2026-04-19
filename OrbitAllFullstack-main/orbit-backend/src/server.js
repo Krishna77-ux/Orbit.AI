@@ -38,29 +38,6 @@ app.use((req, res, next) => {
 
 app.get("/api/debug-ping", (req, res) => res.json({ message: "pong", timestamp: new Date() }));
 
-app.get("/api/test-gemini", async (req, res) => {
-  const groqKey = process.env.GROQ_API_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY;
-
-  // Test Groq
-  if (groqKey) {
-    try {
-      const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${groqKey}` },
-        body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: "Say hello in one word." }], max_tokens: 10 })
-      });
-      const d = await r.json();
-      if (r.ok) return res.json({ status: "OK", provider: "Groq", model: "llama-3.3-70b-versatile", response: d.choices?.[0]?.message?.content });
-      return res.json({ status: "GROQ_FAILED", error: d });
-    } catch (err) {
-      return res.json({ status: "GROQ_ERROR", error: err.message });
-    }
-  }
-
-  return res.json({ status: "ERROR", reason: "GROQ_API_KEY not set in environment variables" });
-});
-
 
 
 
