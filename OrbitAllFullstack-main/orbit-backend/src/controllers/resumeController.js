@@ -4,9 +4,11 @@ import { canUploadResume, decrementUploadCount } from "./paymentController.js";
 
 // Groq AI helper — free tier, 14,400 req/day, no billing needed
 async function callAI(prompt) {
-  const groqKey = process.env.GROQ_API_KEY;
-  const openaiKey = process.env.OPENAI_API_KEY;
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const groqKey = (process.env.GROQ_API_KEY || "").trim();
+  const openaiKey = (process.env.OPENAI_API_KEY || "").trim();
+  const anthropicKey = (process.env.ANTHROPIC_API_KEY || "").trim();
+  
+  let lastError = "No providers attempted";
 
   // ─── 1. Attempt Groq (Ultra-fast, Free tier) ─────────────────────────────
   if (groqKey) {
@@ -31,7 +33,8 @@ async function callAI(prompt) {
         
         if (!response.ok) {
           const errorData = await response.json();
-          console.error(`❌ Groq (${model}) Error:`, response.status, JSON.stringify(errorData));
+          lastError = `Groq (${model}) Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+          console.error(`❌ ${lastError}`);
           continue; // Try next model
         }
 
@@ -66,7 +69,8 @@ async function callAI(prompt) {
       
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("❌ OpenAI API Error:", response.status, JSON.stringify(errorData));
+        lastError = `OpenAI Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+        console.error(`❌ ${lastError}`);
       } else {
         const data = await response.json();
         const text = data.choices?.[0]?.message?.content || "";
@@ -100,7 +104,8 @@ async function callAI(prompt) {
       
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("❌ Anthropic API Error:", response.status, JSON.stringify(errorData));
+        lastError = `Anthropic Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+        console.error(`❌ ${lastError}`);
       } else {
         const data = await response.json();
         const text = data.content?.[0]?.text || "";
@@ -114,7 +119,7 @@ async function callAI(prompt) {
     }
   }
 
-  throw new Error("All AI providers (Groq, OpenAI, Anthropic) failed. Please check API keys or resume content.");
+  throw new Error(`All AI providers failed. Last Error: ${lastError}`);
 }
 
 // Keep callGemini as alias for backward compat
@@ -324,8 +329,8 @@ ${text.substring(0, 10000)}
         skills: ["Project Management", "React", "Data Analysis", "Communication", "Leadership"],
         experience: "3 years (Simulated)",
         suggestions: [
-          `AI service reached capacity. Showing partial insights for your ${text.length} character resume.`,
-          "Optimize keywords for specific roles",
+          `AI service returned: ${aiError.message.substring(0, 100)}`,
+          "Check your API keys and Vercel environment variables.",
           "Try again in a few minutes for full AI analysis"
         ],
         trackMatches: [
