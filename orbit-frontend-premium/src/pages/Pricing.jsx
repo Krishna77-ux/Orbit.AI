@@ -6,54 +6,59 @@ import SoftBackground from "../components/SoftBackground";
 
 const PLANS = [
   {
-    name: "Basic",
-    price: "$1.99",
-    priceValue: 199,
-    period: "month",
-    resumeUploads: "5",
+    name: "Free Trial",
+    price: "₹0",
+    priceValue: 0,
+    period: "forever",
+    resumeUploads: "10",
     features: [
-      "5 Resume Uploads",
-      "Basic ATS Analysis",
-      "Email Support",
-      "Download Reports"
+      "10 Resume Analysis",
+      "Standard AI Insights",
+      "Community Access",
     ],
-    popular: false,
-    id: "basic"
+    highlight: false,
+    gradient: "from-slate-500/10 to-slate-400/10",
+    border: "border-white/10",
+    button: "bg-white/5 text-white cursor-default",
+    id: "free"
   },
   {
-    name: "Premium",
-    price: "$5.99",
-    priceValue: 599,
+    name: "Orbit Plus",
+    price: "₹499",
+    priceValue: 49900,
     period: "month",
     resumeUploads: "50",
     features: [
-      "50 Resume Uploads",
-      "Advanced ATS Analysis",
-      "AI Career Tutor Access",
-      "Priority Email Support",
-      "Job Matching",
-      "Skill Recommendations"
+      "50 Resume Analysis",
+      "Priority AI Scout",
+      "Full Skill Matrix",
+      "Email Support",
     ],
+    highlight: true,
     popular: true,
-    id: "premium"
+    gradient: "from-blue-500/20 to-cyan-500/20",
+    border: "border-blue-500/50",
+    button: "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25",
+    id: "plus"
   },
   {
-    name: "Pro",
-    price: "$12.99",
-    priceValue: 1299,
+    name: "Orbit Pro",
+    price: "₹999",
+    priceValue: 99900,
     period: "month",
     resumeUploads: "Unlimited",
     features: [
-      "Unlimited Resume Uploads",
-      "Expert Resume Review",
-      "Full AI Suite Access",
-      "24/7 Priority Support",
-      "API Access",
-      "Custom Roadmaps",
-      "Interview Prep",
-      "Monthly Strategy Call"
+      "Unlimited Analysis",
+      "Full AI Career Suite",
+      "AI Orbit Intelligence",
+      "Priority Job Matching",
+      "24/7 Expert Support",
+      "Personalized Roadmaps"
     ],
     popular: false,
+    gradient: "from-purple-500/20 to-pink-500/20",
+    border: "border-purple-500/20",
+    button: "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25",
     id: "pro"
   }
 ];
@@ -66,18 +71,17 @@ export default function Pricing() {
   const navigate = useNavigate();
 
   const handleSubscribe = async (planId) => {
+    // Check if logged in first
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", { state: { from: { pathname: "/pricing" } } });
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setError("Please login first to subscribe to a plan");
-        navigate("/login");
-        return;
-      }
-
       const response = await fetch(`${apiBase}/api/payment/create-checkout-session`, {
         method: "POST",
         headers: {
@@ -87,21 +91,81 @@ export default function Pricing() {
         body: JSON.stringify({ plan: planId }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create checkout session");
-      }
-
       const data = await response.json();
 
+      if (!response.ok) {
+        throw new Error(data.message || data.error || `Server error: ${response.status}`);
+      }
+
       if (data.sessionUrl) {
+        // Fallback for stripe if still passed 
         window.location.href = data.sessionUrl;
+        return;
+      }
+
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Orbit AI",
+        description: `Orbit AI - ${planId} Plan`,
+        order_id: data.orderId,
+        handler: async function (paymentResponse) {
+          try {
+            setLoading(true);
+            const verifyRes = await fetch(`${apiBase}/api/payment/handle-payment-success`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+                plan: planId,
+                isMock: data.isMock
+              }),
+            });
+            
+            const verifyData = await verifyRes.json();
+            
+            if (verifyRes.ok) {
+              navigate(`/payment-success?session_id=${paymentResponse.razorpay_order_id || 'mock'}&plan=${planId}`);
+            } else {
+              setError(verifyData.message || "Payment verification failed.");
+              navigate(`/payment-cancelled`);
+            }
+          } catch (err) {
+            setError("Payment verification failed.");
+            navigate(`/payment-cancelled`);
+          } finally {
+            setLoading(false);
+          }
+        },
+        theme: {
+          color: "#8b5cf6"
+        }
+      };
+
+      if (data.isMock) {
+        // Mock payment flow
+        options.handler({
+          razorpay_order_id: data.orderId,
+          razorpay_payment_id: "mock_payment_" + Date.now(),
+          razorpay_signature: "mock_signature"
+        });
       } else {
-        throw new Error("No checkout URL received");
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function(response) {
+          setError(response.error.description);
+          setLoading(false);
+        });
+        rzp.open();
       }
     } catch (err) {
       console.error("Subscription error:", err);
       setError(err.message || "Failed to process subscription");
-    } finally {
       setLoading(false);
     }
   };

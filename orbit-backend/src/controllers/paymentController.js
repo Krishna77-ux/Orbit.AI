@@ -1,36 +1,47 @@
-import Stripe from "stripe";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 import Payment from "../models/Payment.js";
 import Subscription from "../models/Subscription.js";
 import User from "../models/User.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_dummy");
-
-// Plan definitions
+// Initialize Razorpay
+const getRazorpay = () => new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || "mock_key",
+  key_secret: process.env.RAZORPAY_KEY_SECRET || "mock_secret",
+});
+// Plan definitions (prices in USD cents)
 const PLANS = {
-  basic: {
-    name: "Basic",
-    price: 199, // $1.99 in cents
-    resumeUploads: 5,
-    features: ["5 Resume Uploads", "Basic ATS Analysis", "Email Support"],
-    period: "monthly",
-  },
-  premium: {
-    name: "Premium",
-    price: 599, // $5.99 in cents
+  plus: {
+    name: "Plus",
+    price: 49900,       // ₹499.00
+    displayPrice: "₹499",
     resumeUploads: 50,
-    features: ["50 Resume Uploads", "Advanced ATS Analysis", "AI Tutor Access", "Priority Support"],
+    features: [
+      "50 Resume Uploads",
+      "Priority ATS Analysis",
+      "Full Skill Matrix",
+      "Email Support"
+    ],
     period: "monthly",
   },
   pro: {
     name: "Pro",
-    price: 1299, // $12.99 in cents
+    price: 99900,      // ₹999.00
+    displayPrice: "₹999",
     resumeUploads: -1, // Unlimited
-    features: ["Unlimited Uploads", "Expert Analysis", "Full AI Suite", "24/7 Priority Support", "API Access"],
+    features: [
+      "Unlimited Resume Uploads",
+      "Full AI Career Suite",
+      "AI Orbit Intelligence",
+      "Priority Job Matching",
+      "24/7 Expert Support",
+      "Personalized Roadmaps"
+    ],
     period: "monthly",
   },
 };
 
-// Create checkout session (mock for testing)
+// Create checkout session
 export const createCheckoutSession = async (req, res) => {
   try {
     const { plan } = req.body;
@@ -44,80 +55,109 @@ export const createCheckoutSession = async (req, res) => {
       return res.status(400).json({ message: "Invalid plan" });
     }
 
-    // Mock successful checkout for testing
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5174';
+    const planData = PLANS[plan];
+
+    // Development bypass if no Razorpay Key is provided
+    if (!process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID === "mock_key") {
+      return res.json({
+        isMock: true,
+        orderId: "mock_order_" + Date.now(),
+        amount: planData.price,
+        currency: "INR",
+        plan: plan
+      });
+    }
+
+    // Create Razorpay checkout session (order)
+    const options = {
+      amount: planData.price, // amount in smallest currency unit (paise)
+      currency: "INR",
+      receipt: `receipt_${user._id.toString().substring(0,10)}_${Date.now()}`
+    };
+
+    const order = await getRazorpay().orders.create(options);
+
     res.json({
-      sessionId: "mock_session_" + Date.now(),
-      sessionUrl: `${frontendUrl}/payment-success?session_id=mock_session_${Date.now()}&plan=${plan}`,
-      message: "Mock checkout session created (testing mode)"
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      plan: plan,
+      userId: user._id.toString(),
+      key_id: process.env.RAZORPAY_KEY_ID
     });
   } catch (error) {
-    console.error("Checkout session error:", error);
-    res.status(500).json({ message: "Failed to create checkout session", error: error.message });
+    console.error("Checkout order creation error:", error);
+    res.status(500).json({ message: "Failed to create checkout order", error: error.message });
   }
 };
 
-// Verify payment and activate subscription (mock for testing)
+// Verify payment and activate subscription
 export const handlePaymentSuccess = async (req, res) => {
   try {
-    const { sessionId, plan } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan, isMock } = req.body;
     const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // For mock sessions, skip Stripe verification
-    if (sessionId && sessionId.startsWith("mock_session_")) {
-      console.log("Processing mock payment for plan:", plan);
-    } else {
-      // Real Stripe verification (when implemented)
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      if (session.payment_status !== "paid") {
-        return res.status(400).json({ message: "Payment not completed" });
+    if (!isMock) {
+      // Verify Razorpay signature
+      const secret = process.env.RAZORPAY_KEY_SECRET;
+      const shasum = crypto.createHmac("sha256", secret);
+      shasum.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+      const digest = shasum.digest("hex");
+
+      if (digest !== razorpay_signature) {
+        return res.status(400).json({ message: "Transaction signature verification failed" });
       }
     }
 
     const planData = PLANS[plan];
+    const sessionId = razorpay_order_id || `mock_session_${Date.now()}`;
 
-    // Create or update payment record
-    await Payment.create({
-      user: user._id,
-      email: user.email,
-      stripeSessionId: sessionId,
-      amount: planData.price,
-      currency: "usd",
-      status: "completed",
-      plan: plan,
-      description: `${planData.name} Plan - ${planData.resumeUploads} uploads`,
-      metadata: {
-        features: planData.features.join(","),
-      },
-    });
-
-    // Create or update subscription
-    let subscription = await Subscription.findOne({ user: user._id });
-
-    if (!subscription) {
-      subscription = new Subscription({
+    // Upsert payment record (prevent duplicate key error on retry)
+    await Payment.findOneAndUpdate(
+      { stripeSessionId: sessionId },
+      {
         user: user._id,
         email: user.email,
-        stripeCustomerId: `mock_customer_${user._id}`,
-      });
+        stripeSessionId: sessionId, // we keep the field name but store razorpay id
+        amount: planData.price,
+        currency: "inr",
+        status: "completed",
+        plan: plan,
+        description: `${planData.name} Plan - ${planData.resumeUploads} uploads`,
+        metadata: { features: planData.features.join(","), razorpay_payment_id },
+      },
+      { upsert: true, new: true }
+    );
+
+    // Upsert subscription (keyed on user to avoid duplicates)
+    const subscriptionUpdate = {
+      user: user._id,
+      email: user.email,
+      plan: plan,
+      status: "active",
+      plan_details: {
+        name: planData.name,
+        price: planData.price,
+        resumeUploads: planData.resumeUploads,
+        features: planData.features,
+      },
+      currentPeriodStart: new Date(),
+      currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    };
+    // Only set stripeCustomerId if not null (avoids unique index collision)
+    if (razorpay_payment_id) {
+      subscriptionUpdate.stripeCustomerId = razorpay_payment_id; // Using field name from existing schema
     }
 
-    subscription.plan = plan;
-    subscription.status = "active";
-    subscription.plan_details = {
-      name: planData.name,
-      price: planData.price,
-      resumeUploads: planData.resumeUploads,
-      features: planData.features,
-    };
-    subscription.currentPeriodStart = new Date();
-    subscription.currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-
-    await subscription.save();
+    const subscription = await Subscription.findOneAndUpdate(
+      { user: user._id },
+      subscriptionUpdate,
+      { upsert: true, new: true }
+    );
 
     // Update user
     user.isPremium = true;
@@ -179,9 +219,16 @@ export const canUploadResume = async (userId) => {
 
     // Free tier: no uploads allowed
     if (!user.isPremium || !user.subscription) {
+      if (user.resumeUploadsRemaining > 0) {
+        return {
+          allowed: true,
+          plan: "free",
+          uploadsRemaining: user.resumeUploadsRemaining,
+        };
+      }
       return { 
         allowed: false, 
-        reason: "Please subscribe to upload resumes",
+        reason: "Trial limit reached (10 Free Analyses used). Upgrade to Pro for unlimited access!",
         currentPlan: "free",
       };
     }

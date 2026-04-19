@@ -14,46 +14,14 @@ export default function PaymentSuccess() {
   const plan = searchParams.get("plan");
 
   useEffect(() => {
-    const verifyPayment = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          setMessage("Please login first to verify payment");
-          setLoading(false);
-          navigate("/login");
-          return;
-        }
-
-        const response = await fetch(`${getApiBase()}/api/payment/verify-payment`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ sessionId, plan }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setSuccess(true);
-          setMessage(`Welcome to ${data.subscription.plan}! You can now upload resumes.`);
-        } else {
-          setMessage(data.message || "Payment verification failed");
-        }
-      } catch (error) {
-        console.error("Payment verification error:", error);
-        setMessage("Error verifying payment. Please contact support.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    // With Razorpay, payment verification happens in Pricing.jsx immediately upon popup success.
+    // So if the user lands here, we assume it's successful based on query params.
     if (sessionId && plan) {
-      verifyPayment();
+      setSuccess(true);
+      setMessage(`Welcome to ${plan.toUpperCase()}! You can now access your new features.`);
+      setLoading(false);
     } else {
-      setMessage("Invalid payment session");
+      setMessage("No valid payment session found.");
       setLoading(false);
     }
   }, [sessionId, plan]);
