@@ -9,15 +9,5 @@
       "source": "/(.*)",
       "destination": "/orbit-frontend-premium/dist/index.html"
     }
-  ],
-  "builds": [
-    {
-      "src": "orbit-frontend-premium/package.json",
-      "use": "@vercel/vite"
-    },
-    {
-      "src": "orbit-backend/src/server.js",
-      "use": "@vercel/node"
-    }
   ]
 }
