@@ -1,7 +1,27 @@
 import pdf from "pdf-parse/lib/pdf-parse.js";
 import Resume from "../models/Resume.js";
 import { canUploadResume, decrementUploadCount } from "./paymentController.js";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// Direct Gemini v1 REST API helper — bypasses old SDK that uses v1beta
+async function callGemini(prompt) {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error("GEMINI_API_KEY is not set");
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.1 }
+      })
+    }
+  );
+  const data = await response.json();
+  if (!response.ok) throw new Error(`Gemini API error ${response.status}: ${JSON.stringify(data.error)}`);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+}
+
 
 export const uploadResume = async (req, res) => {
   try {
@@ -65,11 +85,6 @@ export const uploadResume = async (req, res) => {
     let suggestions = [];
 
     try {
-      if (!process.env.GEMINI_API_KEY) {
-        throw new Error("GEMINI_API_KEY is missing from environment variables.");
-      }
-      
-      const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const prompt = `
 You are an expert ATS (Applicant Tracking System) analyzer. Analyze the following resume text and provide:
 1. An ATS Score (0-100) based on industry standards.
@@ -96,38 +111,8 @@ Resume Text:
 ${text.substring(0, 10000)}
       `;
 
-      const model = ai.getGenerativeModel({ 
-        model: "gemini-pro",
-        generationConfig: {
-          temperature: 0.1,
-        }
-      });
-      
-      // Retry logic: try up to 3 times with exponential backoff for transient 503s
-      let result;
-      let lastError;
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          console.log(`🔄 AI Attempt ${attempt}/3...`);
-          result = await model.generateContent(prompt);
-          break; // Success
-        } catch (retryErr) {
-          lastError = retryErr;
-          console.warn(`⚠️ Attempt ${attempt} failed: ${retryErr.message?.substring(0, 120)}`);
-          if (attempt < 3) {
-            const delay = attempt * 500;
-            console.log(`⏳ Waiting ${delay}ms before retry...`);
-            await new Promise(r => setTimeout(r, delay));
-          }
-        }
-      }
-
-      if (!result) {
-        throw lastError || new Error("All AI attempts failed");
-      }
-
-      const response = await result.response;
-      const responseText = response.text();
+      console.log("🔄 Calling Gemini v1 API directly...");
+      const responseText = await callGemini(prompt);
       console.log("📥 Raw AI Response (First 100 char):", responseText.substring(0, 100));
       
       let parsedData;
@@ -137,7 +122,6 @@ ${text.substring(0, 10000)}
         parsedData = JSON.parse(cleanJson);
       } catch (parseError) {
         console.error("❌ JSON Parse Error:", responseText);
-        // Fallback resilient parse matching anything resembling JSON object:
         try {
            const fallbackMatch = responseText.match(/\{.*\}/s);
            parsedData = JSON.parse(fallbackMatch ? fallbackMatch[0] : "{}");
@@ -315,7 +299,6 @@ export const setTargetRole = async (req, res) => {
     
     let roadmap = [];
     try {
-      const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const prompt = `
         You are an expert career architect.
         User Skills: ${latestResume.extractedSkills.join(", ")}
@@ -333,28 +316,9 @@ export const setTargetRole = async (req, res) => {
         Respond ONLY with a valid JSON array of objects. No markdown.
       `;
 
-      const model = ai.getGenerativeModel({
-        model: 'gemini-pro',
-        generationConfig: { temperature: 0.3 }
-      });
-
-      let result;
-      let lastError;
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          console.log(`🔄 Roadmap AI Attempt ${attempt}/3...`);
-          result = await model.generateContent(prompt);
-          break;
-        } catch (retryErr) {
-          lastError = retryErr;
-          console.warn(`⚠️ Attempt ${attempt} failed: ${retryErr.message?.substring(0, 120)}`);
-          if (attempt < 3) await new Promise(r => setTimeout(r, attempt * 2000));
-        }
-      }
-      if (!result) throw lastError || new Error("All roadmap AI attempts failed");
-
-      const responseText = result.response.text();
-      const jsonMatch = responseText.match(/\[[\s\S]*\]/); // Array match
+      console.log("🔄 Calling Gemini v1 for roadmap...");
+      const responseText = await callGemini(prompt);
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       const cleanJson = jsonMatch ? jsonMatch[0] : responseText;
       roadmap = JSON.parse(cleanJson);
     } catch (err) {
@@ -660,7 +624,6 @@ export const getJobMatches = async (req, res) => {
     let missingSkills = [];
 
     try {
-      const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const prompt = `
         Search for 5 high-quality, personalized job opportunities specifically for a ${targetRole}.
         User Background:
@@ -679,31 +642,11 @@ export const getJobMatches = async (req, res) => {
         Respond ONLY with a valid JSON array of objects.
       `;
 
-      const model = ai.getGenerativeModel({
-        model: 'gemini-pro',
-        generationConfig: { temperature: 0.2 }
-      });
-
-      let result;
-      let lastError;
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          console.log(`🔄 Job Match AI Attempt ${attempt}/3...`);
-          result = await model.generateContent(prompt);
-          break;
-        } catch (retryErr) {
-          lastError = retryErr;
-          console.warn(`⚠️ Attempt ${attempt} failed: ${retryErr.message?.substring(0, 120)}`);
-          if (attempt < 3) await new Promise(r => setTimeout(r, attempt * 2000));
-        }
-      }
-      if (!result) throw lastError || new Error("All job match AI attempts failed");
-
-      const responseText = result.response.text();
+      console.log("🔄 Calling Gemini v1 for job matches...");
+      const responseText = await callGemini(prompt);
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       jobs = JSON.parse(jsonMatch ? jsonMatch[0] : responseText);
       
-      // Calculate missing skills across all jobs
       const userSkillsLower = skills.map(s => s.toLowerCase());
       missingSkills = [...new Set(jobs.flatMap(j => 
         j.requiredSkills.filter(s => !userSkillsLower.includes(s.toLowerCase()))
@@ -749,9 +692,8 @@ export const getCareerTree = async (req, res) => {
     const targetRole = latestResume.targetRole || "Career Growth";
     const missions = latestResume.trackMatches || [];
 
-    console.log(`🌌 Generating Career Orbit Tree for ${targetRole} with ${missions.length} known missions via Gemini...`);
+    console.log(`🌌 Generating Career Orbit Tree for ${targetRole} via Gemini...`);
 
-    const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const prompt = `
       Analyze this user's professional profile:
       Current Skills: ${skills.join(", ")}
@@ -778,32 +720,8 @@ export const getCareerTree = async (req, res) => {
       }
     `;
 
-    const model = ai.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      generationConfig: { temperature: 0.3 }
-    });
-
-    // Retry logic for transient 503s
-    let result;
-    let lastError;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        console.log(`🔄 Career Tree AI Attempt ${attempt}/3...`);
-        result = await model.generateContent(prompt);
-        break;
-      } catch (retryErr) {
-        lastError = retryErr;
-        console.warn(`⚠️ Attempt ${attempt} failed: ${retryErr.message?.substring(0, 120)}`);
-        if (attempt < 3) {
-          const delay = attempt * 2000;
-          await new Promise(r => setTimeout(r, delay));
-        }
-      }
-    }
-
-    if (!result) throw lastError || new Error("All career tree AI attempts failed");
-
-    const responseText = result.response.text();
+    console.log("🔄 Calling Gemini v1 for career tree...");
+    const responseText = await callGemini(prompt);
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     const treeData = JSON.parse(jsonMatch ? jsonMatch[0] : responseText);
 
@@ -879,11 +797,6 @@ export const tutorChat = async (req, res) => {
     let answer = "";
 
     try {
-      if (!process.env.GEMINI_API_KEY) {
-        throw new Error("Missing GEMINI_API_KEY");
-      }
-
-      const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const prompt = `
 You are an expert AI Career Coach named "Orbit AI Tutor".
 The user is asking: "${question}"
@@ -898,10 +811,8 @@ Context about the User:
 Please provide a helpful, tailored, and very concise coaching answer directly to the user based on their specific profile and question. Be conversational, encouraging, and format your output beautifully with emojis and markdown (e.g. boldings, lists) where appropriate. Limit your response to 2-3 short paragraphs max.
       `;
 
-      const tutorModel = ai.getGenerativeModel({ model: 'gemini-pro' });
-      const tutorResult = await tutorModel.generateContent(prompt);
-
-      answer = tutorResult.response.text();
+      console.log("🔄 Calling Gemini v1 for tutor chat...");
+      answer = await callGemini(prompt);
       console.log("✅ Tutor AI response generated successfully.");
 
     } catch (aiError) {

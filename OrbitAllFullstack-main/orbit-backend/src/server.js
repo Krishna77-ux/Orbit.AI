@@ -42,16 +42,23 @@ app.get("/api/test-gemini", async (req, res) => {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return res.json({ status: "ERROR", reason: "GEMINI_API_KEY is missing from environment" });
   try {
-    const { GoogleGenerativeAI } = await import("@google/generative-ai");
-    const ai = new GoogleGenerativeAI(key);
-    const model = ai.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent("Say hello in one word.");
-    const text = result.response.text();
-    res.json({ status: "OK", keyPresent: true, keyPrefix: key.substring(0, 8) + "...", response: text });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: "Say hello in one word." }] }] })
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) return res.json({ status: "FAILED", code: response.status, error: data });
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    res.json({ status: "OK", keyPrefix: key.substring(0, 8) + "...", response: text });
   } catch (err) {
-    res.json({ status: "FAILED", keyPresent: true, keyPrefix: key.substring(0, 8) + "...", error: err.message, code: err.status });
+    res.json({ status: "FETCH_ERROR", error: err.message });
   }
 });
+
 
 
 // Vercel Serverless Database Connection Middleware
