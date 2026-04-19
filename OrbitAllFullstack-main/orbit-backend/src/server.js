@@ -48,7 +48,10 @@ app.get("/api/test-gemini", async (req, res) => {
     const modelNames = listData.models?.map(m => m.name) || [];
     
     // Then: try the first text-capable model we find
-    const flashModel = modelNames.find(n => n.includes("flash")) || 
+    const flashModel = modelNames.find(n => n === "models/gemini-2.0-flash") ||
+                       modelNames.find(n => n.includes("2.0-flash")) ||
+                       modelNames.find(n => n.includes("1.5-flash")) ||
+                       modelNames.find(n => n.includes("flash")) ||
                        modelNames.find(n => n.includes("pro")) ||
                        modelNames[0];
 
