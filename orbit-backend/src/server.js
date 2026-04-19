@@ -1,76 +1,50 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import resumeRoutes from "./routes/resumeRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-// ✅ IMPORTANT: CORS at VERY TOP before everything
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://orbit-ai-coud.vercel.app",
-    "https://orbit-ai.onrender.com" // Render backend URL
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-app.use(express.json());
-
-// 🔍 SIMPLE TEST ROUTE - bypass route imports
-app.get("/api/simple-test", (req, res) => {
-  console.log("🧪 SIMPLE TEST ROUTE HIT");
-  res.status(200).json({ 
-    message: "Simple test working!", 
-    timestamp: new Date(),
-    file: "server.js"
-  });
+// Security Headers for Google Auth & Logic
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+  next();
 });
+
+app.use(cors());
+app.use(express.json());
 
 // Increase JSON payload limit for larger requests
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Import routes after CORS
-import resumeRoutes from "./routes/resumeRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/resume", resumeRoutes);
-app.use("/api/payment", paymentRoutes);
-
-// Test route to verify server is working
-app.get("/api/test", (req, res) => {
-  res.status(200).json({ 
-    message: "Server is working!", 
-    timestamp: new Date(),
-    routes: {
-      auth: "/api/auth/login",
-      health: "/api/health"
-    }
-  });
-});
-
 // Health check endpoint for Railway
-app.get("/api/health", (req, res) => {
+app.get("/health", (req, res) => {
   res.status(200).json({ status: "healthy", message: "Server is running", timestamp: new Date() });
-});
-
-app.get("/", (req, res) => {
-  res.status(200).send("Orbit Backend Running 🚀");
 });
 
 // Add logging middleware for debugging
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
+});
+
+app.get("/api/debug-ping", (req, res) => res.json({ message: "pong", timestamp: new Date() }));
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes); // New Career Orbit routes are registered here
+app.use("/api/payment", paymentRoutes);
+
+app.get("/", (req, res) => {
+  res.status(200).send("Orbit Backend Running 🚀");
 });
 
 // 404 handler
@@ -85,29 +59,29 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal server error", error: err.message });
 });
 
-const PORT = process.env.PORT || 10000; // Render uses port 10000
-
-// Start server IMMEDIATELY (don't wait for DB)
-const server = app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log("🎉 All systems ready!");
-  console.log("🌐 Routes are now accessible!");
-  console.log(`🌐 Server URL: http://localhost:${PORT}`);
+// Vercel Serverless Database Connection Middleware
+let isConnected = false;
+app.use(async (req, res, next) => {
+  if (!isConnected) {
+    try {
+      await connectDB();
+      isConnected = true;
+    } catch (err) {
+      console.error("❌ Failed to connect to DB:", err.message);
+    }
+  }
+  next();
 });
 
-// Connect to database asynchronously (don't block server)
-connectDB().catch(error => {
-  console.error("❌ Database connection failed:", error.message);
-  // Server keeps running even if DB fails
-});
+const PORT = parseInt(process.env.PORT) || 5000;
 
-// Handle graceful shutdown
-process.on("SIGTERM", () => {
-  console.log("SIGTERM received, shutting down gracefully...");
-  server.close(() => {
-    console.log("Server closed");
-    process.exit(0);
+// Only start the local server if we are not in Vercel production
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Server running locally on port ${PORT}`);
+    console.log("🎉 All systems ready!");
   });
-});
+}
 
+// Export the app so Vercel can run it statelessly
 export default app;
