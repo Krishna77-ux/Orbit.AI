@@ -38,6 +38,21 @@ app.use((req, res, next) => {
 
 app.get("/api/debug-ping", (req, res) => res.json({ message: "pong", timestamp: new Date() }));
 
+// Vercel Serverless Database Connection Middleware
+let isConnected = false;
+app.use(async (req, res, next) => {
+  if (!isConnected) {
+    try {
+      await connectDB();
+      isConnected = true;
+      console.log("✅ Vercel DB Connected");
+    } catch (err) {
+      console.error("❌ Failed to connect to DB:", err.message);
+    }
+  }
+  next();
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes); // New Career Orbit routes are registered here
@@ -59,19 +74,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal server error", error: err.message });
 });
 
-// Vercel Serverless Database Connection Middleware
-let isConnected = false;
-app.use(async (req, res, next) => {
-  if (!isConnected) {
-    try {
-      await connectDB();
-      isConnected = true;
-    } catch (err) {
-      console.error("❌ Failed to connect to DB:", err.message);
-    }
-  }
-  next();
-});
+
 
 const PORT = parseInt(process.env.PORT) || 5000;
 
