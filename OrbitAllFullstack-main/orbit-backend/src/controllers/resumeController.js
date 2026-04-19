@@ -7,8 +7,9 @@ async function callAI(prompt) {
   const groqKey = (process.env.GROQ_API_KEY || "").trim();
   const openaiKey = (process.env.OPENAI_API_KEY || "").trim();
   const anthropicKey = (process.env.ANTHROPIC_API_KEY || "").trim();
+  const sambanovaKey = (process.env.SAMBANOVA_API_KEY || "").trim();
   
-  let lastError = "No providers attempted";
+  let lastError = "No providers attempted. Check your Vercel Environment Variables.";
 
   // ─── 1. Attempt Groq (Ultra-fast, Free tier) ─────────────────────────────
   if (groqKey) {
@@ -50,7 +51,41 @@ async function callAI(prompt) {
     }
   }
 
-  // ─── 2. Attempt OpenAI (Gold standard for reliability) ──────────────────
+  // ─── 2. Attempt SambaNova (Fast, Free/Trial) ─────────────────
+  if (sambanovaKey) {
+    try {
+      console.log("🤖 Attempting SambaNova (Llama-3.1-70B)...");
+      const response = await fetch("https://api.sambanova.ai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${sambanovaKey}`
+        },
+        body: JSON.stringify({
+          model: "Meta-Llama-3.1-70B-Instruct",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.1
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        lastError = `SambaNova Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+        console.error(`❌ ${lastError}`);
+      } else {
+        const data = await response.json();
+        const text = data.choices?.[0]?.message?.content || "";
+        if (text) {
+          console.log("✅ SambaNova responded successfully");
+          return text;
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ SambaNova failed:", err.message);
+    }
+  }
+
+  // ─── 3. Attempt OpenAI (Gold standard for reliability) ──────────────────
   if (openaiKey) {
     try {
       console.log("🤖 Attempting OpenAI (gpt-4o-mini)...");
@@ -88,34 +123,8 @@ async function callAI(prompt) {
   if (anthropicKey) {
     try {
       console.log("🤖 Attempting Anthropic (claude-3-5-haiku-20241022)...");
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": anthropicKey,
-          "anthropic-version": "2023-06-01"
-        },
-        body: JSON.stringify({
-          model: "claude-3-5-haiku-20241022",
-          max_tokens: 4096,
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        lastError = `Anthropic Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
-        console.error(`❌ ${lastError}`);
-      } else {
-        const data = await response.json();
-        const text = data.content?.[0]?.text || "";
-        if (text) {
-          console.log("✅ Anthropic responded successfully");
-          return text;
-        }
-      }
     } catch (err) {
-      console.warn("⚠️ Anthropic failed:", err.message);
+      console.warn("⚠️ SambaNova failed:", err.message);
     }
   }
 
@@ -128,7 +137,7 @@ const callGemini = callAI;
 // ─── Interview Prep ───────────────────────────────────────────────────────────
 export const getInterviewPrep = async (req, res) => {
   try {
-    const resume = await Resume.findOne({ userId: req.user._id }).sort({ createdAt: -1 });
+    const resume = await Resume.findOne({ user: req.user.id }).sort({ createdAt: -1 });
     if (!resume) {
       return res.status(404).json({ message: "No resume found. Please upload your resume first." });
     }
