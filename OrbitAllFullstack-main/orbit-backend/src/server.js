@@ -38,6 +38,22 @@ app.use((req, res, next) => {
 
 app.get("/api/debug-ping", (req, res) => res.json({ message: "pong", timestamp: new Date() }));
 
+app.get("/api/test-gemini", async (req, res) => {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return res.json({ status: "ERROR", reason: "GEMINI_API_KEY is missing from environment" });
+  try {
+    const { GoogleGenerativeAI } = await import("@google/generative-ai");
+    const ai = new GoogleGenerativeAI(key);
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent("Say hello in one word.");
+    const text = result.response.text();
+    res.json({ status: "OK", keyPresent: true, keyPrefix: key.substring(0, 8) + "...", response: text });
+  } catch (err) {
+    res.json({ status: "FAILED", keyPresent: true, keyPrefix: key.substring(0, 8) + "...", error: err.message, code: err.status });
+  }
+});
+
+
 // Vercel Serverless Database Connection Middleware
 let isConnected = false;
 app.use(async (req, res, next) => {
