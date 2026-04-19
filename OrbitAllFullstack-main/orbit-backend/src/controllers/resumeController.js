@@ -4,25 +4,36 @@ import { canUploadResume, decrementUploadCount } from "./paymentController.js";
 
 // Groq AI helper — free tier, 14,400 req/day, no billing needed
 async function callAI(prompt) {
-  const groqKey = (process.env.GROQ_API_KEY || "").trim();
+  // Rotate through multiple keys for each provider if available
+  const groqKeys = [
+    (process.env.GROQ_API_KEY || "").trim(),
+    (process.env.GROQ_API_KEY_2 || "").trim(),
+    (process.env.GROQ_API_KEY_3 || "").trim()
+  ].filter(Boolean);
+
+  const sambanovaKeys = [
+    (process.env.SAMBANOVA_API_KEY || "").trim(),
+    (process.env.SAMBANOVA_API_KEY_2 || "").trim(),
+    (process.env.SAMBANOVA_API_KEY_3 || "").trim()
+  ].filter(Boolean);
+
   const openaiKey = (process.env.OPENAI_API_KEY || "").trim();
   const anthropicKey = (process.env.ANTHROPIC_API_KEY || "").trim();
-  const sambanovaKey = (process.env.SAMBANOVA_API_KEY || "").trim();
   
   let lastError = "No providers attempted. Check your Vercel Environment Variables.";
 
-  // ─── 1. Attempt Groq (Ultra-fast, Free tier) ─────────────────────────────
-  if (groqKey) {
+  // ─── 1. Attempt Groq Cluster ───────────────────────────────────────────
+  for (const [index, key] of groqKeys.entries()) {
     const groqModels = ["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768"];
     
     for (const model of groqModels) {
       try {
-        console.log(`🤖 Attempting Groq AI (${model})...`);
+        console.log(`🤖 Attempting Groq AI (${model}) with Key #${index + 1}...`);
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${groqKey}`
+            "Authorization": `Bearer ${key}`
           },
           body: JSON.stringify({
             model: model,
@@ -34,32 +45,29 @@ async function callAI(prompt) {
         
         if (!response.ok) {
           const errorData = await response.json();
-          lastError = `Groq (${model}) Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+          lastError = `Groq Key #${index + 1} (${model}) Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
           console.error(`❌ ${lastError}`);
-          continue; // Try next model
+          continue; 
         }
 
         const data = await response.json();
         const text = data.choices?.[0]?.message?.content || "";
-        if (text) {
-          console.log(`✅ Groq AI (${model}) responded successfully`);
-          return text;
-        }
+        if (text) return text;
       } catch (err) {
-        console.warn(`⚠️ Groq (${model}) failed:`, err.message);
+        console.warn(`⚠️ Groq Key #${index + 1} failed:`, err.message);
       }
     }
   }
 
-  // ─── 2. Attempt SambaNova (Fast, Free/Trial) ─────────────────
-  if (sambanovaKey) {
+  // ─── 2. Attempt SambaNova Cluster ─────────────────────────────────────
+  for (const [index, key] of sambanovaKeys.entries()) {
     try {
-      console.log("🤖 Attempting SambaNova (Llama-3.1-70B)...");
+      console.log(`🤖 Attempting SambaNova with Key #${index + 1}...`);
       const response = await fetch("https://api.sambanova.ai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${sambanovaKey}`
+          "Authorization": `Bearer ${key}`
         },
         body: JSON.stringify({
           model: "Meta-Llama-3.1-70B-Instruct",
@@ -70,25 +78,23 @@ async function callAI(prompt) {
       
       if (!response.ok) {
         const errorData = await response.json();
-        lastError = `SambaNova Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+        lastError = `SambaNova Key #${index + 1} Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
         console.error(`❌ ${lastError}`);
-      } else {
-        const data = await response.json();
-        const text = data.choices?.[0]?.message?.content || "";
-        if (text) {
-          console.log("✅ SambaNova responded successfully");
-          return text;
-        }
+        continue;
       }
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content || "";
+      if (text) return text;
     } catch (err) {
-      console.warn("⚠️ SambaNova failed:", err.message);
+      console.warn(`⚠️ SambaNova Key #${index + 1} failed:`, err.message);
     }
   }
 
-  // ─── 3. Attempt OpenAI (Gold standard for reliability) ──────────────────
+  // ─── 3. Attempt OpenAI Fallback ───────────────────────────────────────
   if (openaiKey) {
     try {
-      console.log("🤖 Attempting OpenAI (gpt-4o-mini)...");
+      console.log("🤖 Attempting OpenAI Fallback...");
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -109,22 +115,42 @@ async function callAI(prompt) {
       } else {
         const data = await response.json();
         const text = data.choices?.[0]?.message?.content || "";
-        if (text) {
-          console.log("✅ OpenAI responded successfully");
-          return text;
-        }
+        if (text) return text;
       }
     } catch (err) {
-      console.warn("⚠️ OpenAI failed:", err.message);
+      console.warn("⚠️ OpenAI fallback failed");
     }
   }
 
-  // ─── 4. Attempt Anthropic Claude ───────────────────────────────────────
+  // ─── 4. Attempt Anthropic Fallback ────────────────────────────────────
   if (anthropicKey) {
     try {
-      console.log("🤖 Attempting Anthropic (claude-3-5-haiku-20241022)...");
+      console.log("🤖 Attempting Anthropic Fallback...");
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": anthropicKey,
+          "anthropic-version": "2023-06-01"
+        },
+        body: JSON.stringify({
+          model: "claude-3-5-haiku-20241022",
+          max_tokens: 4096,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        lastError = `Anthropic Error: ${response.status} - ${errorData.error?.message || JSON.stringify(errorData)}`;
+        console.error(`❌ ${lastError}`);
+      } else {
+        const data = await response.json();
+        const text = data.content?.[0]?.text || "";
+        if (text) return text;
+      }
     } catch (err) {
-      console.warn("⚠️ SambaNova failed:", err.message);
+      console.warn("⚠️ Anthropic fallback failed");
     }
   }
 
