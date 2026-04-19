@@ -5,7 +5,6 @@ import { canUploadResume, decrementUploadCount } from "./paymentController.js";
 // Groq AI helper — free tier, 14,400 req/day, no billing needed
 async function callAI(prompt) {
   const groqKey = process.env.GROQ_API_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY;
   const openaiKey = process.env.OPENAI_API_KEY;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
@@ -48,40 +47,7 @@ async function callAI(prompt) {
     }
   }
 
-  // ─── 2. Attempt Gemini (High context, Reliable) ─────────────────────────
-  if (geminiKey) {
-    try {
-      console.log("🤖 Attempting Gemini AI (gemini-1.5-flash)...");
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.1 }
-          })
-        }
-      );
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("❌ Gemini API Error:", response.status, JSON.stringify(errorData));
-        // Don't throw yet, try next provider
-      } else {
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-        if (text) {
-          console.log("✅ Gemini AI responded successfully");
-          return text;
-        }
-      }
-    } catch (err) {
-      console.warn("⚠️ Gemini failed:", err.message);
-    }
-  }
-
-  // ─── 3. Attempt OpenAI (Gold standard for reliability) ──────────────────
+  // ─── 2. Attempt OpenAI (Gold standard for reliability) ──────────────────
   if (openaiKey) {
     try {
       console.log("🤖 Attempting OpenAI (gpt-4o-mini)...");
@@ -148,7 +114,7 @@ async function callAI(prompt) {
     }
   }
 
-  throw new Error("All AI providers (Groq, Gemini, OpenAI, Anthropic) failed. Please check API keys or resume content.");
+  throw new Error("All AI providers (Groq, OpenAI, Anthropic) failed. Please check API keys or resume content.");
 }
 
 // Keep callGemini as alias for backward compat
