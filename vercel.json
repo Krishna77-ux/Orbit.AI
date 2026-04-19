@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/OrbitAllFullstack-main/orbit-backend/src/server.js"
+      "destination": "/api/index.js"
     },
     {
       "source": "/(.*)",
