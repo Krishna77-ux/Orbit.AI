@@ -97,7 +97,7 @@ ${text.substring(0, 10000)}
       `;
 
       const model = ai.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-pro",
         generationConfig: {
           temperature: 0.1,
         }
@@ -334,7 +334,7 @@ export const setTargetRole = async (req, res) => {
       `;
 
       const model = ai.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-pro',
         generationConfig: { temperature: 0.3 }
       });
 
@@ -680,7 +680,7 @@ export const getJobMatches = async (req, res) => {
       `;
 
       const model = ai.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-pro',
         generationConfig: { temperature: 0.2 }
       });
 
@@ -898,7 +898,7 @@ Context about the User:
 Please provide a helpful, tailored, and very concise coaching answer directly to the user based on their specific profile and question. Be conversational, encouraging, and format your output beautifully with emojis and markdown (e.g. boldings, lists) where appropriate. Limit your response to 2-3 short paragraphs max.
       `;
 
-      const tutorModel = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const tutorModel = ai.getGenerativeModel({ model: 'gemini-pro' });
       const tutorResult = await tutorModel.generateContent(prompt);
 
       answer = tutorResult.response.text();
