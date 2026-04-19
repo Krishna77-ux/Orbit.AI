@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Orbit | Access Your Future</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#38debb",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "secondary-container": "#68fadd",
+                      "tertiary-fixed": "#5ffbd6",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#0b1a3d",
+                      "on-tertiary-fixed-variant": "#005142",
+                      "primary": "#0b193c",
+                      "inverse-on-surface": "#eff1f3",
+                      "secondary-fixed-dim": "#44ddc1",
+                      "on-secondary-fixed-variant": "#005145",
+                      "secondary": "#006b5c",
+                      "inverse-primary": "#b9c5f2",
+                      "on-tertiary-fixed": "#002019",
+                      "on-surface-variant": "#454652",
+                      "on-secondary-fixed": "#00201a",
+                      "surface-tint": "#515d84",
+                      "on-tertiary-container": "#00ab8e",
+                      "tertiary-container": "#00372c",
+                      "outline-variant": "#c6c5c4",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2d3133",
+                      "surface-variant": "#e0e3e5",
+                      "surface": "#f7f9fb",
+                      "on-error": "#ffffff",
+                      "surface-dim": "#d8dadc",
+                      "error-container": "#ffdad6",
+                      "primary-fixed": "#dbe1ff",
+                      "primary-container": "#222e52",
+                      "surface-container-high": "#e6e8ea",
+                      "surface-container": "#eceef0",
+                      "secondary-fixed": "#68fadd",
+                      "on-surface": "#191c1e",
+                      "error": "#ba1a1a",
+                      "on-background": "#191c1e",
+                      "surface-bright": "#f7f9fb",
+                      "on-primary-container": "#8a96c0",
+                      "background": "#f7f9fb",
+                      "outline": "#767683",
+                      "surface-container-highest": "#e0e3e5",
+                      "tertiary": "#002018",
+                      "primary-fixed-dim": "#b9c5f2",
+                      "on-secondary-container": "#007261",
+                      "on-primary-fixed-variant": "#39456b",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-orbit-cosmic {
+            background: radial-gradient(circle at top left, #222e52 0%, #0b193c 100%);
+        }
+        .glass-panel {
+            background: rgba(34, 46, 82, 0.4);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+        }
+        .glow-input:focus {
+            box-shadow: 0 0 15px rgba(104, 250, 221, 0.3);
+        }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out; }
+        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-[#0b193c] font-body text-surface selection:bg-secondary-container selection:text-on-secondary-container overflow-hidden h-screen w-full flex items-center justify-center">
+<!-- Background Layer with Cosmic Imagery -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-orbit-cosmic opacity-60"></div>
+<img alt="Cosmic Backdrop" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30" data-alt="cinematic view of earth from deep space with soft teal atmospheric glow and distant stars in high resolution professional photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZlSeN4rYhfBlDTVWnSDfLMcDhcOitgC-eL_pehKtM0cLhOmMAbZINSW3VeRWyuwLqNqtVnq8oHC6OYSx_bb8YWzSevCk4khARkeda-34R7zE_ZoKF2niqhPaoOgoLnPaiQ1o1ews6RXvvPjB1juYMpWJ2kKEqwzaJHbeNum4aVPNwzNYcHKv6123n5hTpxaJHBQSLSdyTObGaqyexOerlyWcJlZdXCMLWIDpRIWu527S9OweeBGyFDTyJ6U3daduJyu497kNQASo"/>
+<!-- Abstract Glow Elements -->
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/20 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary-container/40 rounded-full blur-[100px]"></div>
+</div>
+<!-- Main Content Container -->
+<main class="relative z-10 w-full max-w-6xl px-6 flex items-center justify-center lg:justify-between gap-12">
+<!-- Left Side: Editorial Branding (Hidden on mobile) -->
+<div class="hidden lg:flex flex-col max-w-md animate-fade-in">
+<div class="mb-8">
+<span class="font-headline font-black text-4xl tracking-tighter text-white">Orbit.</span>
+</div>
+<h1 class="font-headline font-extrabold text-5xl leading-tight text-white mb-6">
+                Navigate the <span class="text-secondary-fixed">Next Frontier</span> of Your Career.
+            </h1>
+<p class="text-on-primary-container text-lg leading-relaxed mb-8">
+                The most advanced career navigation engine for the next generation of engineers and creators. Your journey into the celestial professional landscape starts here.
+            </p>
+<div class="flex items-center gap-4 text-on-primary-container">
+<div class="flex -space-x-3">
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-primary" data-alt="portrait of professional woman in tech office with natural lighting and soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmOsr3z1Dr1V-enjZlwkLe4bX5huWLrYcmqLHaCoALigLAw7vxNIbBIi9XGc64mnpA328YLh6gzxtE7hKqKFNynq6fiw-uLNVDkaUHgKXDC8le0qqfSOgcgwjTM3FhS19IKxyLDbRS4k_VzKLK_BP0C5DWUtaiukzAsKSIAwDs7YDCfHuM8kRnl2fw1Teyj6yyhspXbNgY4Z3RKHdio34xqDl4xSqranQXUSdQfX4R14Hw8VvdsrF4v-z111BY3T3oxI2QUcSFuEg"/>
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-primary" data-alt="portrait of young professional man smiling in modern studio setting with clean lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8TpTACGMf9RnKJhRJ1Ax5CZ6wx6G_OdtGA4pP6V3hNJp5HIINDAvfCEDfl-RLaKk-CE3IdF3PZD7CHjyQTKYzv0crIQLLpDJHF20P1cfhM7Jdx5YAi3nztinidKKYSWckryLs4rp7VYYDncIGGgt9A5_Ef2l9FTNSMjEYD08ymbjyT2s9LKqx3so9uzYSoBm15KN4wVPv90tPzNWBvyq2v-WC5ME0h1J8PEf9PovJq6SBufbr-jvAzHJtqA6VHnv0lWXs9uZbK08"/>
+<img alt="User" class="w-10 h-10 rounded-full border-2 border-primary" data-alt="headshot of smiling designer in creative workspace with vibrant colors and professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh-0gKpQfLl9a0G60iImiR09TrqHlGQuEHaiBH8kwJKQl7mIe5fg4EdkYw4V1gSNZfPMZ0ad-r5PnJvGr0PcXYW9NuFS3Nasta6vVSb8-cPxCT3fM7uD_-iAtHL3hbvSALRR4YxKQyiYHYW7CYPqK3Pa77ZK0aUILcOVl45Cu8lkb5HpCdQ1hPMFKXFcFSZYFHuOWRzOlgmVcIymOxO5c-DqHIMVQlTriN8DitE2VEqj8IugtFmLXoQLIdSEMFzBG7d2ZUO0ipWIU"/>
+</div>
+<span class="text-sm font-medium tracking-wide">Joined by 10,000+ navigators</span>
+</div>
+</div>
+<!-- Right Side: Login Card -->
+<div class="w-full max-w-md animate-slide-up">
+<div class="glass-panel border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-[0px_40px_100px_rgba(0,0,0,0.3)]">
+<div class="text-center lg:text-left mb-10">
+<div class="lg:hidden mb-6 flex justify-center">
+<span class="font-headline font-black text-3xl tracking-tighter text-white">Orbit.</span>
+</div>
+<h2 class="font-headline font-bold text-3xl text-white mb-2">Welcome Back</h2>
+<p class="text-on-primary-container font-medium">Please enter your credentials to continue.</p>
+</div>
+<form class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-on-primary-container tracking-wide px-1" for="email">Email Address</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-primary-container transition-colors group-focus-within:text-secondary-fixed">mail</span>
+<input class="w-full bg-white/5 border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-on-primary-container/40 focus:ring-2 focus:ring-secondary/50 focus:border-secondary-fixed glow-input transition-all outline-none" id="email" placeholder="name@university.edu" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="block text-sm font-semibold text-on-primary-container tracking-wide" for="password">Password</label>
+<a class="text-xs font-bold text-secondary-fixed hover:text-white transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-primary-container transition-colors group-focus-within:text-secondary-fixed">lock</span>
+<input class="w-full bg-white/5 border-white/10 rounded-2xl py-4 pl-12 pr-12 text-white placeholder-on-primary-container/40 focus:ring-2 focus:ring-secondary/50 focus:border-secondary-fixed glow-input transition-all outline-none" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-primary-container hover:text-white transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center gap-3 px-1">
+<div class="relative flex items-center h-5">
+<input class="w-5 h-5 rounded border-white/20 bg-white/5 text-secondary focus:ring-secondary-fixed focus:ring-offset-0" id="remember" type="checkbox"/>
+</div>
+<label class="text-sm font-medium text-on-primary-container cursor-pointer select-none" for="remember">Stay logged in for 30 days</label>
+</div>
+<!-- Sign In Button -->
+<button class="w-full bg-gradient-to-br from-secondary to-primary-container text-white font-headline font-bold py-4 rounded-2xl shadow-lg shadow-secondary/20 hover:shadow-secondary/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300" type="submit">
+                        Sign In
+                    </button>
+</form>
+<!-- Divider -->
+<div class="relative my-10">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-white/5"></div>
+</div>
+<div class="relative flex justify-center text-xs font-bold uppercase tracking-widest text-on-primary-container">
+<span class="bg-[#121c40] px-4 rounded-full">Or continue with</span>
+</div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl py-3.5 transition-all group">
+<svg class="w-5 h-5 group-hover:scale-110 transition-transform" viewbox="0 0 24 24">
+<path d="M12 5.04c1.64 0 3.12.56 4.28 1.67l3.2-3.2C17.52 1.63 14.93 1 12 1 7.48 1 3.61 3.61 1.83 7.43l3.75 2.91C6.46 7.42 8.99 5.04 12 5.04z" fill="#EA4335"></path>
+<path d="M23.49 12.27c0-.83-.07-1.63-.2-2.39H12v4.51h6.44c-.28 1.48-1.12 2.73-2.38 3.58l3.7 2.87c2.16-2 3.43-4.94 3.43-8.57z" fill="#4285F4"></path>
+<path d="M5.58 14.91c-.24-.72-.38-1.49-.38-2.28 0-.79.14-1.56.38-2.28L1.83 7.43C1.04 9.1 0.59 10.97 0.59 12.91s.45 3.81 1.24 5.48l3.75-2.91z" fill="#FBBC05"></path>
+<path d="M12 23c3.24 0 5.96-1.07 7.95-2.91l-3.7-2.87c-1.09.73-2.48 1.16-4.25 1.16-3.01 0-5.54-2.38-6.42-5.32l-3.75 2.91C3.61 19.39 7.48 23 12 23z" fill="#34A853"></path>
+</svg>
+<span class="text-sm font-semibold text-white">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl py-3.5 transition-all group">
+<svg class="w-5 h-5 fill-white group-hover:scale-110 transition-transform" viewbox="0 0 24 24">
+<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+</svg>
+<span class="text-sm font-semibold text-white">GitHub</span>
+</button>
+</div>
+<div class="mt-10 text-center">
+<p class="text-on-primary-container text-sm font-medium">
+                        Don't have an account? 
+                        <a class="text-secondary-fixed font-bold hover:underline underline-offset-4 ml-1" href="#">Launch your profile</a>
+</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Links -->
+<footer class="fixed bottom-8 left-0 w-full z-10 px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold text-on-primary-container/60">
+<div class="flex gap-8">
+<a class="hover:text-white transition-colors" href="#">Privacy Charter</a>
+<a class="hover:text-white transition-colors" href="#">Navigation Terms</a>
+</div>
+<div>
+<span>Orbit Engine v2.4.0 © 2024 Celestial Systems</span>
+</div>
+</footer>
+</body></html>

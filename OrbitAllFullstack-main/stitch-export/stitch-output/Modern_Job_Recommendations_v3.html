@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Job Role Recommendations | Celestial Career</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#6366f1",
+                    "secondary": "#10b981",
+                    "background": "#030712",
+                    "surface": "#030712",
+                    "on-surface": "#f8fafc",
+                    "on-surface-variant": "#94a3b8",
+                    "outline-variant": "#1e293b",
+                    "primary-container": "#1e1b4b",
+                    "secondary-container": "#064e3b",
+                    "error": "#ef4444",
+                    "error-container": "#450a0a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.75rem",
+                    "xl": "1rem",
+                    "2xl": "1.5rem",
+                    "3xl": "2.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            },
+            "animation": {
+                "fade-in-up": "fadeInUp 0.6s ease-out forwards",
+                "glow": "glow 4s ease-in-out infinite alternate"
+            },
+            "keyframes": {
+                "fadeInUp": {
+                    "0%": { opacity: "0", transform: "translateY(20px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" }
+                }
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .glass-nav {
+            background: rgba(3, 7, 18, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-sidebar {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glow-accent {
+            box-shadow: 0 0 20px -5px rgba(99, 102, 241, 0.3);
+        }
+        .animate-delay-100 { animation-delay: 100ms; }
+        .animate-delay-200 { animation-delay: 200ms; }
+        .animate-delay-300 { animation-delay: 300ms; }
+        .animate-delay-400 { animation-delay: 400ms; }
+        .animate-delay-500 { animation-delay: 500ms; }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased selection:bg-primary/30">
+<!-- Top Navigation Bar -->
+<header class="glass-nav sticky top-0 z-50">
+<nav class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-indigo-400 flex items-center justify-center shadow-lg glow-accent">
+<span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-white font-headline">Orbit</span>
+</div>
+<div class="hidden md:flex gap-8">
+<a class="text-slate-400 font-medium hover:text-white transition-colors text-sm" href="#">Home</a>
+<a class="text-slate-400 font-medium hover:text-white transition-colors text-sm" href="#">Roadmap</a>
+<a class="text-slate-400 font-medium hover:text-white transition-colors text-sm" href="#">Tutor</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2.5 glass rounded-xl text-slate-400 hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<button class="p-2.5 glass rounded-xl text-slate-400 hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+<div class="w-10 h-10 rounded-xl bg-primary-container overflow-hidden border border-white/10 ml-2">
+<img alt="Student Profile Avatar" class="object-cover w-full h-full grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS5g31U701PntlNAHITszI6ppPABF-ZQvpO2woJLPbNc5fhYOrXhATw_WR2aAyx9-kgBOWrCAwfH0ccLgO0Cx2I4NAkUE7eV52GaOo2FGIMl-vRN4HOsweAeelJXOmDGcLsYjfW9p4WOpXccZG82sLH-zA0VrUeznk83FWMHiuazChSb1GOza9iEbId6VlHvZBmT1ZqXUEVSajIzuMEFDvyGiUvSuBukhlF23U1pi15YisVcnfJav_pUfW03TuAQchQrzZq8eXquU"/>
+</div>
+</div>
+</nav>
+</header>
+<div class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex fixed left-0 top-[73px] h-[calc(100vh-73px)] w-72 glass-sidebar flex-col py-8 px-4 z-40">
+<div class="px-4 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<div>
+<p class="text-lg font-bold text-white font-headline">Navigator</p>
+<p class="text-[9px] uppercase tracking-widest text-slate-500 font-black">BTech Career Engine</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Resume Analyzer</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">map</span>
+<span>Roadmap</span>
+</a>
+<a class="text-slate-400 px-6 py-4 hover:bg-white/5 rounded-2xl flex items-center gap-4 text-sm font-semibold transition-all hover:translate-x-2 hover:text-white" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span>Career Tutor</span>
+</a>
+<a class="bg-primary/20 text-white rounded-2xl px-6 py-4 flex items-center gap-4 text-sm font-semibold border border-white/10 transition-all shadow-[0_0_20px_-5px_rgba(99,102,241,0.2)]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span>
+<span>Job Roles</span>
+</a>
+</nav>
+<div class="mt-auto">
+<div class="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-3xl relative overflow-hidden group border border-white/5">
+<div class="relative z-10">
+<p class="text-white font-bold text-sm mb-1">Upgrade Orbit</p>
+<p class="text-slate-400 text-[11px] mb-4 font-medium">Unlock premium AI tutoring</p>
+<button class="w-full bg-white text-primary py-3 rounded-xl text-xs font-black hover:scale-[1.02] transition-all">GET PREMIUM</button>
+</div>
+<div class="absolute -right-6 -bottom-6 opacity-10 group-hover:scale-125 transition-transform duration-700">
+<span class="material-symbols-outlined text-8xl text-white">grade</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-72 p-10">
+<div class="max-w-[1400px] mx-auto">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16 animate-fade-in-up">
+<div class="max-w-2xl">
+<span class="text-secondary font-black tracking-[0.4em] text-[10px] uppercase mb-4 block">PERSONALIZED PATHWAYS</span>
+<h1 class="font-headline font-bold text-5xl text-white tracking-tighter leading-[1.1] mb-6">Job Role <br/><span class="text-primary">Recommendations</span></h1>
+<p class="text-slate-400 text-lg leading-relaxed max-w-lg font-medium opacity-80">Based on your recent skill assessments and resume analysis, we've mapped out these high-growth roles where you're already leading the curve.</p>
+</div>
+<div class="flex gap-4 w-full md:w-auto">
+<button class="glass text-slate-300 px-6 py-3 rounded-2xl text-sm font-bold hover:text-white transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">tune</span>
+                        Filter
+                    </button>
+<button class="bg-primary text-white px-8 py-3 rounded-2xl text-sm font-black tracking-wide shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all uppercase">
+                        Refresh Profile
+                    </button>
+</div>
+</header>
+<!-- Filter Pills -->
+<div class="flex flex-wrap gap-3 mb-12 animate-fade-in-up animate-delay-100">
+<button class="px-6 py-2.5 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">All Roles</button>
+<button class="px-6 py-2.5 glass text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Internship</button>
+<button class="px-6 py-2.5 glass text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Entry-level</button>
+<button class="px-6 py-2.5 glass text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Mid-senior</button>
+<span class="mx-2 w-[1px] h-6 bg-white/10 self-center"></span>
+<button class="px-6 py-2.5 glass text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">FinTech</button>
+<button class="px-6 py-2.5 glass text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">EdTech</button>
+<button class="px-6 py-2.5 glass text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Web3</button>
+</div>
+<!-- Bento Grid of Recommendations -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1: Backend Engineer -->
+<div class="animate-fade-in-up animate-delay-100 glass-card p-10 rounded-3xl flex flex-col group hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+<div class="flex justify-between items-start mb-8">
+<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl">terminal</span>
+</div>
+<div class="bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-secondary/20">
+                            94% Match
+                        </div>
+</div>
+<h3 class="font-headline font-bold text-2xl text-white mb-3">Backend Engineer</h3>
+<p class="text-sm text-slate-400 mb-10 leading-relaxed font-medium">Design and implement server-side logic for high-scale applications with modern architecture.</p>
+<div class="space-y-4 mb-10">
+<p class="text-[9px] uppercase tracking-[0.2em] font-black text-slate-500">KEY SKILLS NEEDED</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">Node.js</span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">PostgreSQL</span>
+<span class="bg-secondary/10 border border-secondary/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-secondary flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                                Docker
+                            </span>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+<div class="flex -space-x-3">
+<img alt="Recruiter" class="w-10 h-10 rounded-xl border-2 border-[#030712] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXSmU4w-s9UefmOOGQGR7ail2X8p7i6MzvUpu8m_RByHCLfQMLgg3cgLrGxo1dW5FJORAgBhvjFVD8v-mvyqG63nTgRQfI_6Psrls3-ljbRKCeG68xHGXXM8z4Dtliv_X-vJhVBSj2fQf9NTH-01d0lB7fEgN3KiJ6VX2w5-NQGwttHP3-sgdaFInr4BAv_S_TENq0byc55SWiQgU82IFc_uCGCCMqEu14xMVbJ1ai18UyPU0H5rbhX7osPdil4VqwSXLzotcUhWs"/>
+<img alt="Recruiter" class="w-10 h-10 rounded-xl border-2 border-[#030712] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbL936JB7BejNN4JBIOeNArTMvgy-pPcTUIJBLkJA9CazhJRP4Y3MaGW5TMe-Flz9u8TXDzwFuXJqrZkiOU_K1vAYRVuv3Xzf1AqhV7RISes3V7MpvauUqjumVIkuwIM7h5T_hooTOUnykvlUw-ml7_sjd5nAeK8V57zn4K08p34ew4466NCh7P6iSYNYN4GuyahRrSL4WlkFc-K5QBS1736xDMlD93vqfWg-80tZrmLELCBW9r9mxGxZUBmbqQ1gvEGshdEGtWTo"/>
+<div class="w-10 h-10 rounded-xl border-2 border-[#030712] bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400">+12</div>
+</div>
+<button class="bg-primary/20 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all border border-primary/30">View Roadmap</button>
+</div>
+</div>
+<!-- Card 2: Cloud Solutions Architect -->
+<div class="animate-fade-in-up animate-delay-200 glass-card p-10 rounded-3xl border-2 border-secondary/20 flex flex-col group hover:shadow-[0_0_40px_-15px_rgba(16,185,129,0.3)] transition-all duration-500 hover:-translate-y-2">
+<div class="flex justify-between items-start mb-8">
+<div class="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary border border-secondary/20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl">cloud_done</span>
+</div>
+<div class="bg-secondary text-primary-container px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-secondary/20">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">stars</span>
+                            88% Match
+                        </div>
+</div>
+<h3 class="font-headline font-bold text-2xl text-white mb-3">Cloud Architect</h3>
+<p class="text-sm text-slate-400 mb-10 leading-relaxed font-medium">Architecting resilient, scalable cloud infrastructure and secure deployment pipelines.</p>
+<div class="space-y-4 mb-10">
+<p class="text-[9px] uppercase tracking-[0.2em] font-black text-slate-500">KEY SKILLS NEEDED</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">AWS Lambda</span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">Kubernetes</span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">Terraform</span>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+<span class="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">6 New Jobs Found</span>
+<button class="bg-white text-primary px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">Learn More</button>
+</div>
+</div>
+<!-- Card 3: QA Automation Engineer -->
+<div class="animate-fade-in-up animate-delay-300 glass-card p-10 rounded-3xl flex flex-col group hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+<div class="flex justify-between items-start mb-8">
+<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
+</div>
+<div class="bg-slate-800 text-slate-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/5">
+                            72% Match
+                        </div>
+</div>
+<h3 class="font-headline font-bold text-2xl text-white mb-3">QA Automation</h3>
+<p class="text-sm text-slate-400 mb-10 leading-relaxed font-medium">Build robust automated testing frameworks to ensure enterprise product quality.</p>
+<div class="space-y-4 mb-10">
+<p class="text-[9px] uppercase tracking-[0.2em] font-black text-slate-500">KEY SKILLS NEEDED</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-secondary/10 border border-secondary/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-secondary flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                                Selenium
+                            </span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">Python</span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">Jenkins</span>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+<div class="text-[10px] font-black text-slate-500 uppercase">Salary: <span class="text-white">$110k</span></div>
+<button class="bg-primary/20 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all border border-primary/30">View Skills</button>
+</div>
+</div>
+<!-- Card 4: DevSecOps Lead -->
+<div class="animate-fade-in-up animate-delay-400 glass-card p-10 rounded-3xl flex flex-col group hover:border-error/30 transition-all duration-500 hover:-translate-y-2">
+<div class="flex justify-between items-start mb-8">
+<div class="w-14 h-14 bg-error/10 rounded-2xl flex items-center justify-center text-error border border-error/20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl">security</span>
+</div>
+<div class="bg-error/10 text-error px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-error/20">
+                            45% Match
+                        </div>
+</div>
+<h3 class="font-headline font-bold text-2xl text-white mb-3">DevSecOps Lead</h3>
+<p class="text-sm text-slate-400 mb-10 leading-relaxed font-medium">Integrate advanced security protocols into the high-frequency CI/CD pipeline.</p>
+<div class="space-y-4 mb-10">
+<p class="text-[9px] uppercase tracking-[0.2em] font-black text-slate-500">SKILL GAP ANALYSIS</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-error/10 border border-error/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-error flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">error</span>
+                                Azure Security
+                            </span>
+<span class="bg-error/10 border border-error/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-error flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">error</span>
+                                Penetration Testing
+                            </span>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+<span class="text-[10px] text-error font-black uppercase tracking-widest italic">GAP IDENTIFIED</span>
+<button class="bg-error/20 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-error transition-all border border-error/30">Start Prep</button>
+</div>
+</div>
+<!-- Card 5: Full Stack Developer -->
+<div class="animate-fade-in-up animate-delay-500 glass-card p-10 rounded-3xl flex flex-col group hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+<div class="flex justify-between items-start mb-8">
+<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl">layers</span>
+</div>
+<div class="bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-secondary/20">
+                            91% Match
+                        </div>
+</div>
+<h3 class="font-headline font-bold text-2xl text-white mb-3">Full Stack Dev</h3>
+<p class="text-sm text-slate-400 mb-10 leading-relaxed font-medium">Manage end-to-end development of feature-rich, user-centric web products.</p>
+<div class="space-y-4 mb-10">
+<p class="text-[9px] uppercase tracking-[0.2em] font-black text-slate-500">KEY SKILLS NEEDED</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-secondary/10 border border-secondary/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-secondary flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                                React.js
+                            </span>
+<span class="bg-secondary/10 border border-secondary/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-secondary flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                                Express
+                            </span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">GraphQL</span>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+<div class="flex -space-x-3">
+<img alt="Team" class="w-10 h-10 rounded-xl border-2 border-[#030712] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTWkdHyD0fhFNRCalfOBfsZtP5kcfk4n-3aLHfOwuXrWZHClLsL6Wgbv_vFg_mO5ibyE0DFE1rmwbj8I6VA5ldxDekdzrPf1EBF4pkoQAjWmHznAJX09_7IhDOe7ZtwdqNfstQ6RGkbmebVyEQJ_C0RMMlo43eNX5rAqoMu5JjfmlHaVgG6K7qMr3WyQERz88K6E7YVsBbMqqWNYeMgIkeYazzcM3HRMIt9kJKDE1OImOe27pxLOYf1i6C-uioLCAKEOzVDHdhdK8"/>
+<img alt="Team" class="w-10 h-10 rounded-xl border-2 border-[#030712] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO9yTXdXaq7QHHgTbj9rVe5cOI0ZV5JBjnz9BzWePpCqKQDqz9z83gVsSNStYT6k3WDJvsWGmktH2jsggxCaDm4eeQcjdisIVUnumqosFe8SVn6UVWh-f-hxSCl2hyfXKjmTXwip8qjU5y0qborQR5gc-HWmVKEnuA18aDi-Vzd13C2YYZB58iLNYMObT_xIrXGWgqem5LEkldMM_Z3LA2nx-aGtrGP932cexkcLPUu-r2F44XghN6O6L40N5X4GCqVQogUo7DjmQ"/>
+</div>
+<button class="bg-primary/20 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all border border-primary/30">View Roadmap</button>
+</div>
+</div>
+<!-- Card 6: AI Training Engineer -->
+<div class="animate-fade-in-up animate-delay-[600ms] glass-card p-10 rounded-3xl flex flex-col group hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+<div class="flex justify-between items-start mb-8">
+<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl">neurology</span>
+</div>
+<div class="bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-secondary/20">
+                            82% Match
+                        </div>
+</div>
+<h3 class="font-headline font-bold text-2xl text-white mb-3">AI Training Eng</h3>
+<p class="text-sm text-slate-400 mb-10 leading-relaxed font-medium">Optimization and fine-tuning of Large Language Models for production environments.</p>
+<div class="space-y-4 mb-10">
+<p class="text-[9px] uppercase tracking-[0.2em] font-black text-slate-500">KEY SKILLS NEEDED</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">PyTorch</span>
+<span class="bg-white/5 border border-white/5 px-4 py-1.5 rounded-xl text-[10px] font-bold text-slate-300">Fine-tuning</span>
+<span class="bg-secondary/10 border border-secondary/20 px-4 py-1.5 rounded-xl text-[10px] font-black text-secondary flex items-center gap-1.5 uppercase">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                                Python
+                            </span>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
+<span class="text-[10px] font-black text-secondary uppercase tracking-[0.3em] glow-text">Hot Trend</span>
+<button class="bg-primary/20 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all border border-primary/30">View Roadmap</button>
+</div>
+</div>
+</div>
+<!-- Featured Section: Career Pulse -->
+<section class="mt-20 glass p-12 rounded-[3rem] relative overflow-hidden animate-fade-in-up animate-delay-500">
+<div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-headline font-bold text-4xl text-white mb-6">Your Career <br/><span class="text-primary">Trajectory</span></h2>
+<p class="text-slate-400 text-lg mb-10 opacity-90 leading-relaxed font-medium">You are currently in the top 5% of applicants for Backend Engineering roles in the EdTech sector. Focus on 'Distributed Systems' to reach the next tier.</p>
+<div class="space-y-8">
+<div class="w-full">
+<div class="flex justify-between mb-3">
+<span class="text-[9px] font-black text-white uppercase tracking-[0.3em]">INDUSTRY READINESS</span>
+<span class="text-[10px] font-black text-secondary">88%</span>
+</div>
+<div class="w-full h-3 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[88%] rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/10 shadow-2xl">
+<h4 class="text-white font-bold text-base mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+                            Market Demand Index
+                        </h4>
+<div class="flex items-end gap-3 h-40">
+<div class="w-full bg-secondary/20 h-[60%] rounded-xl transition-all hover:bg-secondary/40"></div>
+<div class="w-full bg-secondary/30 h-[45%] rounded-xl transition-all hover:bg-secondary/50"></div>
+<div class="w-full bg-secondary h-[80%] rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]"></div>
+<div class="w-full bg-secondary/25 h-[30%] rounded-xl transition-all hover:bg-secondary/45"></div>
+<div class="w-full bg-secondary/70 h-[95%] rounded-xl transition-all shadow-[0_0_25px_rgba(16,185,129,0.4)]"></div>
+<div class="w-full bg-secondary/15 h-[55%] rounded-xl transition-all hover:bg-secondary/35"></div>
+<div class="w-full bg-secondary h-[90%] rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]"></div>
+</div>
+<div class="flex justify-between mt-6 text-[9px] text-slate-500 font-black uppercase tracking-widest">
+<span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span>
+</div>
+</div>
+</div>
+<!-- Decorative Orbs -->
+<div class="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full blur-[100px]"></div>
+<div class="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/10 rounded-full blur-[100px]"></div>
+</section>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="mt-32 w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 border-t border-white/5 py-16 animate-fade-in-up">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-indigo-400 flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white text-base" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+<span class="text-xl font-bold text-white font-headline tracking-tight">Orbit Engine</span>
+</div>
+<p class="font-body text-[10px] font-medium tracking-wider text-slate-600 uppercase">© 2024 CELESTIAL CAREER ENGINE. SYSTEM VERSION 4.0.2</p>
+</div>
+<div class="flex gap-10">
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Operations</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Support</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors" href="#">Protocol</a>
+</div>
+<div class="flex gap-4">
+<button class="w-11 h-11 rounded-xl glass flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined text-lg">share</span>
+</button>
+</div>
+</footer>
+<!-- FAB (From Modern Dashboard v2) -->
+<div class="fixed bottom-10 right-10 z-[100] animate-fade-in-up animate-delay-500">
+<button class="w-16 h-16 rounded-2xl bg-primary shadow-[0_20px_50px_rgba(99,102,241,0.5)] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all duration-300 relative group overflow-hidden border border-white/20">
+<span class="material-symbols-outlined text-3xl relative z-10" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div class="absolute inset-0 bg-gradient-to-tr from-indigo-400 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</div>
+</body></html>
