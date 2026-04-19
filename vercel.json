@@ -7,7 +7,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/OrbitAllFullstack-main/orbit-frontend-premium/dist/index.html"
+      "destination": "/index.html"
     }
   ]
 }
