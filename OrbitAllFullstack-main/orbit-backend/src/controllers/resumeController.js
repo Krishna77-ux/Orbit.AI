@@ -2,25 +2,60 @@ import pdf from "pdf-parse/lib/pdf-parse.js";
 import Resume from "../models/Resume.js";
 import { canUploadResume, decrementUploadCount } from "./paymentController.js";
 
-// Direct Gemini v1 REST API helper — bypasses old SDK that uses v1beta
-async function callGemini(prompt) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) throw new Error("GEMINI_API_KEY is not set");
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.1 }
-      })
+// Groq AI helper — free tier, 14,400 req/day, no billing needed
+async function callAI(prompt) {
+  const groqKey = process.env.GROQ_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY;
+
+  // Try Groq first (free, reliable)
+  if (groqKey) {
+    try {
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${groqKey}`
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.1,
+          max_tokens: 4096
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(`Groq error ${response.status}: ${JSON.stringify(data.error)}`);
+      const text = data.choices?.[0]?.message?.content || "";
+      console.log("✅ Groq AI responded successfully");
+      return text;
+    } catch (err) {
+      console.warn("⚠️ Groq failed, trying Gemini fallback:", err.message);
     }
-  );
-  const data = await response.json();
-  if (!response.ok) throw new Error(`Gemini API error ${response.status}: ${JSON.stringify(data.error)}`);
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  }
+
+  // Fallback: Gemini v1beta
+  if (geminiKey) {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1 }
+        })
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) throw new Error(`Gemini API error ${response.status}: ${JSON.stringify(data.error)}`);
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  }
+
+  throw new Error("No AI API key configured (GROQ_API_KEY or GEMINI_API_KEY required)");
 }
+
+// Keep callGemini as alias for backward compat
+const callGemini = callAI;
 
 
 export const uploadResume = async (req, res) => {

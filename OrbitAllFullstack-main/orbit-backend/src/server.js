@@ -39,40 +39,28 @@ app.use((req, res, next) => {
 app.get("/api/debug-ping", (req, res) => res.json({ message: "pong", timestamp: new Date() }));
 
 app.get("/api/test-gemini", async (req, res) => {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.json({ status: "ERROR", reason: "GEMINI_API_KEY is missing" });
-  try {
-    // First: list all available models for this key
-    const listRes = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${key}`);
-    const listData = await listRes.json();
-    const modelNames = listData.models?.map(m => m.name) || [];
-    
-    // Then: try the first text-capable model we find
-    const flashModel = modelNames.find(n => n === "models/gemini-2.0-flash") ||
-                       modelNames.find(n => n.includes("2.0-flash")) ||
-                       modelNames.find(n => n.includes("1.5-flash")) ||
-                       modelNames.find(n => n.includes("flash")) ||
-                       modelNames.find(n => n.includes("pro")) ||
-                       modelNames[0];
+  const groqKey = process.env.GROQ_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY;
 
-    if (!flashModel) return res.json({ status: "NO_MODELS", availableModels: modelNames, rawResponse: listData });
-
-    const modelId = flashModel.replace("models/", "");
-    const genRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${key}`,
-      {
+  // Test Groq
+  if (groqKey) {
+    try {
+      const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: "Say hello." }] }] })
-      }
-    );
-    const genData = await genRes.json();
-    const text = genData.candidates?.[0]?.content?.parts?.[0]?.text;
-    res.json({ status: genRes.ok ? "OK" : "GEN_FAILED", usedModel: modelId, availableModels: modelNames, response: text, error: genRes.ok ? undefined : genData });
-  } catch (err) {
-    res.json({ status: "FETCH_ERROR", error: err.message });
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${groqKey}` },
+        body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: "Say hello in one word." }], max_tokens: 10 })
+      });
+      const d = await r.json();
+      if (r.ok) return res.json({ status: "OK", provider: "Groq", model: "llama-3.3-70b-versatile", response: d.choices?.[0]?.message?.content });
+      return res.json({ status: "GROQ_FAILED", error: d });
+    } catch (err) {
+      return res.json({ status: "GROQ_ERROR", error: err.message });
+    }
   }
+
+  return res.json({ status: "ERROR", reason: "GROQ_API_KEY not set in environment variables" });
 });
+
 
 
 
