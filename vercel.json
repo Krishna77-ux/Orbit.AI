@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/orbit-backend/src/server.js"
+      "destination": "/OrbitAllFullstack-main/orbit-backend/src/server.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/orbit-frontend-premium/dist/index.html"
+      "destination": "/OrbitAllFullstack-main/orbit-frontend-premium/dist/index.html"
     }
   ]
 }
