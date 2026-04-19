@@ -40,24 +40,37 @@ app.get("/api/debug-ping", (req, res) => res.json({ message: "pong", timestamp: 
 
 app.get("/api/test-gemini", async (req, res) => {
   const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.json({ status: "ERROR", reason: "GEMINI_API_KEY is missing from environment" });
+  if (!key) return res.json({ status: "ERROR", reason: "GEMINI_API_KEY is missing" });
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`,
+    // First: list all available models for this key
+    const listRes = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${key}`);
+    const listData = await listRes.json();
+    const modelNames = listData.models?.map(m => m.name) || [];
+    
+    // Then: try the first text-capable model we find
+    const flashModel = modelNames.find(n => n.includes("flash")) || 
+                       modelNames.find(n => n.includes("pro")) ||
+                       modelNames[0];
+
+    if (!flashModel) return res.json({ status: "NO_MODELS", availableModels: modelNames, rawResponse: listData });
+
+    const modelId = flashModel.replace("models/", "");
+    const genRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${key}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: "Say hello in one word." }] }] })
+        body: JSON.stringify({ contents: [{ parts: [{ text: "Say hello." }] }] })
       }
     );
-    const data = await response.json();
-    if (!response.ok) return res.json({ status: "FAILED", code: response.status, error: data });
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    res.json({ status: "OK", keyPrefix: key.substring(0, 8) + "...", response: text });
+    const genData = await genRes.json();
+    const text = genData.candidates?.[0]?.content?.parts?.[0]?.text;
+    res.json({ status: genRes.ok ? "OK" : "GEN_FAILED", usedModel: modelId, availableModels: modelNames, response: text, error: genRes.ok ? undefined : genData });
   } catch (err) {
     res.json({ status: "FETCH_ERROR", error: err.message });
   }
 });
+
 
 
 
