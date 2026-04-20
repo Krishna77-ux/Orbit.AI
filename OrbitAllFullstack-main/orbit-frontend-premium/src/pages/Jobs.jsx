@@ -117,8 +117,11 @@ export default function Jobs() {
              </div>
              <h3 className="text-3xl font-headline font-bold text-white mb-3">{j.title}</h3>
              <p className="text-[#8a96c0] font-medium mb-12">{j.description || j.desc}</p>
-             <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all uppercase tracking-widest text-xs">
-                Learn More
+             <button 
+                onClick={() => j.applyLink && window.open(j.applyLink, "_blank")}
+                className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all uppercase tracking-widest text-xs"
+             >
+                View Career Page
              </button>
           </div>
         ))}
