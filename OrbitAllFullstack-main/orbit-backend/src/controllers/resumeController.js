@@ -818,20 +818,21 @@ export const getJobMatches = async (req, res) => {
 
     try {
       const prompt = `
-        Search for 5 high-quality, personalized job opportunities specifically for a ${targetRole}.
+        Search for 5 high-quality, personalized career opportunities specifically for a ${targetRole} at elite companies (e.g., MAANG/Top Tech/Industry Leaders).
         User Background:
         Skills: ${skills.join(", ")}
         Resume Score: ${atsScore}%
 
-        Even if the user's current skills don't perfectly match a ${targetRole} yet, suggest the best-available "Step-up" or "Entry" roles for that career path.
-        For each job, provide:
+        IMPORTANT: For the 'applyLink', provide ONLY stable, official career portal URLs (e.g., 'https://careers.google.com' or 'https://amazon.jobs') rather than specific job IDs which might expire. 
+
+        For each role, provide:
         - title (string)
         - company (string)
         - location (string)
         - skillMatchPercentage (number: 0-100)
         - description (string: 1 short sentence)
         - requiredSkills (array: list of 5 core skills for this role)
-        - applyLink (string: A direct URL to this company's career page or a job board)
+        - applyLink (string: THE OFFICIAL COMPANY CAREER PORTAL URL)
 
         Respond ONLY with a valid JSON array of objects.
       `;
