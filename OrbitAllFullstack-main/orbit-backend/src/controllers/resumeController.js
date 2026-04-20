@@ -831,6 +831,7 @@ export const getJobMatches = async (req, res) => {
         - skillMatchPercentage (number: 0-100)
         - description (string: 1 short sentence)
         - requiredSkills (array: list of 5 core skills for this role)
+        - applyLink (string: A direct URL to this company's career page or a job board)
 
         Respond ONLY with a valid JSON array of objects.
       `;
@@ -839,6 +840,12 @@ export const getJobMatches = async (req, res) => {
       const responseText = await callGemini(prompt);
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       jobs = JSON.parse(jsonMatch ? jsonMatch[0] : responseText);
+      
+      // Ensure every job has an applyLink (Safety Fallback)
+      jobs = jobs.map(j => ({
+        ...j,
+        applyLink: j.applyLink || `https://www.google.com/search?q=${encodeURIComponent(j.title + ' jobs at ' + j.company)}`
+      }));
       
       const userSkillsLower = skills.map(s => s.toLowerCase());
       missingSkills = [...new Set(jobs.flatMap(j => 
